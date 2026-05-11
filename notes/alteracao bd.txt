@@ -1,0 +1,6 @@
+Sempre que editar algum campo no banco de dados ou criar uma tabela nova,
+precisa migrar o banco de dados
+
+- Vai criar a migração com o comando "alembic revision --autogenerate -m "Mensagem padrão"
+
+- Implementar essa alteração, se usa o comando "alembic upgrade head"
