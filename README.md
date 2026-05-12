@@ -104,14 +104,23 @@ target_metadata = None
 </div>
 
 ```python
-from models.usuario import Base
+from database.database import Base
+```
+
+<div style="display: flex; align-items: center;">
+    <img src="https://minecraft.wiki/images/thumb/Warden_sniffing.gif/300px-Warden_sniffing.gif?3e874" width=50> E logo abaixo, você vai fazer outra importação que é o seguinte:
+</div>
+
+```python
+import models
 ```
 <div style="display: flex; align-items: center;">
     <img src="https://minecraft.wiki/images/thumb/Warden_sniffing.gif/300px-Warden_sniffing.gif?3e874" width=50> E no target_metadata (na linha de baixo) você vai substituir o "None" por "Base.metadata", com o código ficando da seguinte maneira:
 </div>
 
 ```python
-from models.usuario import Base
+from database.database import Base
+import models
 target_metadata = Base.metadata
 ```
 <div style="display: flex; align-items: center;">
