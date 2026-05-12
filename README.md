@@ -5,12 +5,12 @@
 <br>
 
 <p>
-    <img src="https://img1.picmix.com/output/stamp/normal/0/4/2/8/2648240_62c56.gif" width=30 align="middle" hspace=10>
+    <img src="https://img1.picmix.com/output/stamp/normal/0/4/2/8/2648240_62c56.gif" width=30 align="middle">&nbsp;&nbsp;
     Após fazer a clonagem do repositório no computador, segue os passos abaixo:
 </p>
 
 <p>
-    <img src="https://img1.picmix.com/output/stamp/normal/0/4/2/8/2648240_62c56.gif" width=30 align="middle" hspace=10>
+    <img src="https://img1.picmix.com/output/stamp/normal/0/4/2/8/2648240_62c56.gif" width=30 align="middle">&nbsp;&nbsp;
     Criar um arquivo na pasta raiz do projeto (back-voluntariado-extensao) chamado .env
 </p>
 <p>
@@ -25,19 +25,22 @@
 SECRET_KEY=pGiggPz2p8xndOWQnTBY6fN3G3asyUa4
 ALGORITHM=HS256
 ```
-
-<div style="display: flex; align-items: center; gap: 10px">
-    <img src="https://img1.picmix.com/output/stamp/normal/0/4/2/8/2648240_62c56.gif" width=30> Dentro da pasta "notes" você pode abrir o arquivo dependencias.txt
-</div>
-<div style="display: flex; align-items: center; gap: 10px; justify-content: center; text-align: center;">
-    <img src="https://img1.picmix.com/output/stamp/normal/0/4/2/8/2648240_62c56.gif" width=30>Após isso você vai copiar o conteúdo no arquivo, abrir um terminal na raiz da pasta do projeto e mandar esse comando (precisa ter o Python instalado na máquina)
-</div>
-<div style="display: flex; align-items: center; gap: 10px">
-    <img src="https://img1.picmix.com/output/stamp/normal/0/4/2/8/2648240_62c56.gif" width=30>Para que não tiver o Pyhton, segue o link
-</div>
-<div style="display: flex; align-items: center; gap: 10px">
-    <img src="https://img1.picmix.com/output/stamp/normal/0/4/2/8/2648240_62c56.gif" width=30><a href="https://www.python.org/ftp/python/3.14.5/python-3.14.5-arm64.exe">Instalador</a>
-</div>
+<p>
+    <img src="https://img1.picmix.com/output/stamp/normal/0/4/2/8/2648240_62c56.gif" width=30 align="middle">&nbsp;&nbsp;
+    Dentro da pasta "notes" você pode abrir o arquivo dependencias.txt
+</p>
+<p>
+    <img src="https://img1.picmix.com/output/stamp/normal/0/4/2/8/2648240_62c56.gif" width=30 align="middle">&nbsp;&nbsp;
+    Após isso você vai copiar o conteúdo no arquivo, abrir um terminal na raiz da pasta do projeto e mandar esse comando (precisa ter o Python instalado na máquina)
+</p>
+<p>
+    <img src="https://img1.picmix.com/output/stamp/normal/0/4/2/8/2648240_62c56.gif" width=30 align="middle">&nbsp;&nbsp;
+    Para que não tiver o Pyhton, segue o link
+</p>
+<p>
+    <img src="https://img1.picmix.com/output/stamp/normal/0/4/2/8/2648240_62c56.gif" width=30 align="middle">&nbsp;&nbsp;
+    <a href="https://www.python.org/ftp/python/3.14.5/python-3.14.5-arm64.exe">Instalador</a>
+</p>
 
 <br>
 <!-- ------------------------ -->
