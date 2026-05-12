@@ -3,20 +3,23 @@
 <br>
     <h1>Instalação</h1>
 <br>
-<table>
-    <tr>
-        <td><img src="https://img1.picmix.com/output/stamp/normal/0/4/2/8/2648240_62c56.gif" width=30></td>
-        <td>Após fazer a clonagem do repositório no computador, segue os passos abaixo:</td>
-    </tr>
 
-</table>
-
-<p style="gap: 10px;">
-    <img src="https://img1.picmix.com/output/stamp/normal/0/4/2/8/2648240_62c56.gif" width=30 align="middle">Criar um arquivo na pasta raiz do projeto (back-voluntariado-extensao) chamado .env
+<p>
+    <img src="https://img1.picmix.com/output/stamp/normal/0/4/2/8/2648240_62c56.gif" width=30 align="middle">&nbsp;&nbsp;
+    Após fazer a clonagem do repositório no computador, segue os passos abaixo:
 </p>
-<div style="display: flex; align-items: center; gap: 10px">
-    <img src="https://img1.picmix.com/output/stamp/normal/0/4/2/8/2648240_62c56.gif" width=30>Nesse arquivo você pode copiar as duas linhas abaixo
-</div>
+
+<p>
+    <img src="https://img1.picmix.com/output/stamp/normal/0/4/2/8/2648240_62c56.gif" width=30 align="middle">&nbsp;&nbsp;
+    Criar um arquivo na pasta raiz do projeto (back-voluntariado-extensao) chamado .env
+</p>
+<p>
+</p>
+
+<p>
+    <img src="https://img1.picmix.com/output/stamp/normal/0/4/2/8/2648240_62c56.gif" width=30 align="middle">&nbsp;&nbsp;
+    Nesse arquivo você pode copiar as duas linhas abaixo
+</p>
 
 ```env
 SECRET_KEY=pGiggPz2p8xndOWQnTBY6fN3G3asyUa4
