@@ -182,3 +182,7 @@ alembic upgrade head
     <img src="https://minecraft.wiki/images/thumb/Warden_sniffing.gif/300px-Warden_sniffing.gif?3e874" width=50 align="middle">
     OBS: Isso é só um visualizador, você não vai conseguir alterar nada direto pelo arquivo do banco. Somente pelas rotas.
 </p>
+
+<!-- TUTORIAL PARA RODAR O BACK-END -->
+<h1>Tutorial para rodar o back-end</h1>
+<p>Em desenvolvimento...</p>
