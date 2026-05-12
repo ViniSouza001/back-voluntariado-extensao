@@ -185,4 +185,60 @@ alembic upgrade head
 
 <!-- TUTORIAL PARA RODAR O BACK-END -->
 <h1>Tutorial para rodar o back-end</h1>
-<p>Em desenvolvimento...</p>
+
+<p>
+    <img src="https://media0.giphy.com/media/v1.Y2lkPTZjMDliOTUyZGRpazJxMXEyZHp0MnYycmY5bHVlMGt6cWdraXpqbzZ6aDM1eXNkbSZlcD12MV9zdGlja2Vyc19zZWFyY2gmY3Q9cw/Nx4C51UKPqEpsYDz58/giphy.gif" width=60 align="middle">
+    Para o back-end funcionar, vamos primeiramente continuar com o terminal na pasta raiz do projeto (back-voluntariado-extensao)
+</p>
+<p>
+    <img src="https://media0.giphy.com/media/v1.Y2lkPTZjMDliOTUyZGRpazJxMXEyZHp0MnYycmY5bHVlMGt6cWdraXpqbzZ6aDM1eXNkbSZlcD12MV9zdGlja2Vyc19zZWFyY2gmY3Q9cw/Nx4C51UKPqEpsYDz58/giphy.gif" width=60 align="middle">
+    Nesse terminal nós vamos rodar o seguinte comando:
+</p>
+
+```cmd
+uvicorn main:app --reload
+```
+<p>
+    <img src="https://media0.giphy.com/media/v1.Y2lkPTZjMDliOTUyZGRpazJxMXEyZHp0MnYycmY5bHVlMGt6cWdraXpqbzZ6aDM1eXNkbSZlcD12MV9zdGlja2Vyc19zZWFyY2gmY3Q9cw/Nx4C51UKPqEpsYDz58/giphy.gif" width=60 align="middle">
+    Supostamente é para ele dar uma mensagem parecida com essa:
+</p>
+
+```cmd
+INFO:     Will watch for changes in these directories: ['C:\\Desktop\\Coding\\proj facul\\back-voluntariado-extensao']
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [16916] using StatReload
+```
+<p>
+    <img src="https://media0.giphy.com/media/v1.Y2lkPTZjMDliOTUyZGRpazJxMXEyZHp0MnYycmY5bHVlMGt6cWdraXpqbzZ6aDM1eXNkbSZlcD12MV9zdGlja2Vyc19zZWFyY2gmY3Q9cw/Nx4C51UKPqEpsYDz58/giphy.gif" width=60 align="middle">
+    Com isso, nosso back-end já está funcionando. No próprio terminal do VS Code você pode segurar a tecla 'Enter' e dar um clique no link que ele passa "http://127.0.0.1:8000", irá abrir uma aba do navegador padrão com esse link
+</p>
+<p>
+    <img src="https://media0.giphy.com/media/v1.Y2lkPTZjMDliOTUyZGRpazJxMXEyZHp0MnYycmY5bHVlMGt6cWdraXpqbzZ6aDM1eXNkbSZlcD12MV9zdGlja2Vyc19zZWFyY2gmY3Q9cw/Nx4C51UKPqEpsYDz58/giphy.gif" width=60 align="middle">
+    Se ele responder com uma tela de
+</p>
+
+```JSON
+{"detail": "Not found"}
+```
+<p>
+    <img src="https://media0.giphy.com/media/v1.Y2lkPTZjMDliOTUyZGRpazJxMXEyZHp0MnYycmY5bHVlMGt6cWdraXpqbzZ6aDM1eXNkbSZlcD12MV9zdGlja2Vyc19zZWFyY2gmY3Q9cw/Nx4C51UKPqEpsYDz58/giphy.gif" width=60 align="middle">
+    Desinstale o banco de dados, e refaça o tutorial
+</p>
+<p>
+    <img src="https://media0.giphy.com/media/v1.Y2lkPTZjMDliOTUyZGRpazJxMXEyZHp0MnYycmY5bHVlMGt6cWdraXpqbzZ6aDM1eXNkbSZlcD12MV9zdGlja2Vyc19zZWFyY2gmY3Q9cw/Nx4C51UKPqEpsYDz58/giphy.gif" width=60 align="middle">
+    É nada, mensagem de "Not found" é normal
+</p>
+
+<p>
+    <img src="https://media0.giphy.com/media/v1.Y2lkPTZjMDliOTUyZGRpazJxMXEyZHp0MnYycmY5bHVlMGt6cWdraXpqbzZ6aDM1eXNkbSZlcD12MV9zdGlja2Vyc19zZWFyY2gmY3Q9cw/Nx4C51UKPqEpsYDz58/giphy.gif" width=60 align="middle">
+    No link que está no navegador "http://127.0.0.1:8000/" você vai escrever um "docs" na frente da barra, ficando assim: "http://127.0.0.1:8000/docs"
+</p>
+<p>
+    <img src="https://media0.giphy.com/media/v1.Y2lkPTZjMDliOTUyZGRpazJxMXEyZHp0MnYycmY5bHVlMGt6cWdraXpqbzZ6aDM1eXNkbSZlcD12MV9zdGlja2Vyc19zZWFyY2gmY3Q9cw/Nx4C51UKPqEpsYDz58/giphy.gif" width=60 align="middle">
+    A tela que aparecerá é a própria documentação da biblioteca que eu usei, nela vai aparecer todas as rotas que existem no back-end e o que cada rota solicita de obrigatório para manipular os dados
+</p>
+
+<h1>Testando rota /auth/register </h1>
+<p>
+    Escrevendo...
+</p>
