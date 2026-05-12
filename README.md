@@ -240,5 +240,62 @@ INFO:     Started reloader process [16916] using StatReload
 
 <h1>Testando rota /auth/register </h1>
 <p>
-    Escrevendo...
+    <img src="./assets/piglin-dancing.gif" width=80 align="middle">
+    A única rota que vai aparecer é uma de verde, do tipo POST, vai ter o nome do caminho "/auth/register" e na frente o nome da função "Criar Conta". Você pode clicar em qualquer parte do verde para expandir ela  
+</p>
+<p>
+    <img src="./assets/piglin-dancing.gif" width=80 align="middle">
+    O que realmente vale para nós no momento é o botão "Try it out" e o pedaço de Json que está abaixo da escrita "Example Value | Schema", no momento ele está dessa forma:
+</p>
+
+```JSON
+{
+  "nome": "string",
+  "email": "string",
+  "senha": "string",
+  "data_nasc": "2026-05-12",
+  "cidade": "string",
+  "uf": "string",
+  "confirmado": false,
+  "admin": false
+}
+```
+<p>
+    <img src="./assets/piglin-dancing.gif" width=80 align="middle">
+    Para você dar aquela testada marota, primeiro clica no botão "Try it out" no canto direito logo abaixo da parte verde da rota que você clicou
+</p>
+<p>
+    <img src="./assets/piglin-dancing.gif" width=80 align="middle">
+    Agora o JSON está liberado para você testar maroto. Para fazer o teste, vou deixar um exemplo aqui abaixo (que funciona) e você pode alterar os dados da maneira que você quer, mas não adicionar campo nem remover
+</p>
+
+```JSON
+{
+  "nome": "Vinicius Vieira de Souza",
+  "email": "vinicius@teste.com",
+  "senha": "123456",
+  "data_nasc": "2005-07-13",
+  "cidade": "Pedreira",
+  "uf": "SP",
+  "confirmado": false,
+  "admin": true
+}
+```
+<p>
+    <img src="./assets/piglin-dancing.gif" width=80 align="middle">
+    Se você seguiu os passos corretamente e o back-end colaborou com você, então rolando a tela um pouco mais para baixo, você vai ver um código com status 200 (código 200 significa "sucesso") e um retorno parecido com isso:
+</p>
+
+```JSON
+{
+  "Mensagem": "Usuario cadastrado com sucesso com e-mail vinicius@teste.com"
+}
+```
+<p>
+    <img src="./assets/piglin-dancing.gif" width=80 align="middle">
+    Agora quando você ir no seu arquivo "banco.db" dentro da pasta "database", e ir na coluna "usuarios", vai ter o seu usuário cadastrado, com a senha criptografada e as demais informações disponíveis.
+</p>
+<p>
+    <img src="./assets/piglin-dancing.gif" width=80 align="middle">
+    O importante é o back-end não deixar passar erros, por exemplo, você não colocar a informação de "nome", "email", "senha" ou colocar uma "data_nasc" diferente, por exemplo "13-07-2005". Não é o padrão que o back-end reconhece.
 </p>
