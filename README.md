@@ -2,7 +2,8 @@
 <p>Este é o back-end que estou estruturando para o nosso projeto de voluntários</p>
 <br>
 <div style="display: flex; align-items: center; gap: 10px;">
-    <img src="https://img1.picmix.com/output/stamp/normal/0/4/2/8/2648240_62c56.gif" width="60"> Instalação
+    <h1>Instalação</h1>
+    <img src="https://img1.picmix.com/output/stamp/normal/0/4/2/8/2648240_62c56.gif" width="60">
 </div>
 <br>
 <p>Após fazer a clonagem do repositório no computador, segue os passos abaixo:</p>
