@@ -1,11 +1,11 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field, EmailStr
 from typing import Optional, List
 from datetime import date
 
 class UsuarioSchema(BaseModel):
-    nome: str
-    email: str
-    senha: str
+    nome: str = Field(min_length=3, max_length=100)
+    email: EmailStr
+    senha: str = Field(min_length=6)
     data_nasc: date
     cidade: str
     uf: str

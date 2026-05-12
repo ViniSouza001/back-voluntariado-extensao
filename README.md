@@ -251,7 +251,7 @@ INFO:     Started reloader process [16916] using StatReload
 ```JSON
 {
   "nome": "string",
-  "email": "string",
+  "email": "user@example.com",
   "senha": "string",
   "data_nasc": "2026-05-12",
   "cidade": "string",
@@ -297,5 +297,5 @@ INFO:     Started reloader process [16916] using StatReload
 </p>
 <p>
     <img src="./assets/piglin-dancing.gif" width=60 align="middle">&nbsp;&nbsp;
-    O importante é o back-end não deixar passar erros, por exemplo, você não colocar a informação de "nome", "email", "senha" ou colocar uma "data_nasc" diferente, por exemplo "13-07-2005". Não é o padrão que o back-end reconhece.
+    O importante é o back-end não deixar passar erros, por exemplo, você não colocar a informação de "nome", "email", "senha" ou colocar uma "data_nasc" diferente do padrão, por exemplo "13-07-2005", ou e-mail sem '@' ou '.com' então qualquer erro suspeito que encontrarem durante a execução, por favor me avisem.
 </p>
