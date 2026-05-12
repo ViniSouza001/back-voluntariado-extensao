@@ -13,8 +13,6 @@
     <img src="https://img1.picmix.com/output/stamp/normal/0/4/2/8/2648240_62c56.gif" width=30 align="middle">&nbsp;&nbsp;
     Criar um arquivo na pasta raiz do projeto (back-voluntariado-extensao) chamado .env
 </p>
-<p>
-</p>
 
 <p>
     <img src="https://img1.picmix.com/output/stamp/normal/0/4/2/8/2648240_62c56.gif" width=30 align="middle">&nbsp;&nbsp;
