@@ -71,48 +71,65 @@ sqlalchemy.url = driver://user:pass@localhost/dbname
 sqlalchemy.url = sqlite:///database/banco.db
 ```
 
-<div style="display: flex; align-items: center; gap: 10px;">
-<img src="https://minecraft.wiki/images/thumb/Warden_sniffing.gif/300px-Warden_sniffing.gif?3e874" width=70>
+<!-- ----------------------------- -->
 <h2>Configuração arquivo env.py</h2>
-</div>
 
-<p>Agora dentro da pasta "alembic" você vai abrir o arquivo "env.py" e logo abaixo da linha 6 onde está escrito</p>
+<div style="display: flex; align-items: center;">
+    <img src="https://minecraft.wiki/images/thumb/Warden_sniffing.gif/300px-Warden_sniffing.gif?3e874" width=50> Agora dentro da pasta "alembic" você vai abrir o arquivo "env.py" e logo abaixo da linha 6 onde está escrito
+</div>
 
 ```python
 from alembic import context
 ```
 
-<p>Você pode quebrar 2 linhas e digitar o código abaixo:</p>
+<div style="display: flex; align-items: center;">
+    <img src="https://minecraft.wiki/images/thumb/Warden_sniffing.gif/300px-Warden_sniffing.gif?3e874" width=50> Você pode quebrar 2 linhas e digitar o código abaixo:
+</div>
 
 ```python
 import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 ```
-<p>Depois um pouco abaixo do seu código, você vai procurar onde está escrito:</p>
+
+<div style="display: flex; align-items: center;">
+    <img src="https://minecraft.wiki/images/thumb/Warden_sniffing.gif/300px-Warden_sniffing.gif?3e874" width=50> Depois um pouco abaixo do seu código, você vai procurar onde está escrito:
+</div>
 
 ```python
 target_metadata = None
 ```
-<p>Acima dessa linha, você vai adicionar uma importação, digitando o seguinte:</p>
+<div style="display: flex; align-items: center;">
+    <img src="https://minecraft.wiki/images/thumb/Warden_sniffing.gif/300px-Warden_sniffing.gif?3e874" width=50> Acima dessa linha, você vai adicionar uma importação, digitando o seguinte:
+</div>
 
 ```python
 from models.usuario import Base
 ```
-<p>E no target_metadata (na linha de baixo) você vai substituir o "None" por "Base.metadata", com o código ficando da seguinte maneira:</p>
+<div style="display: flex; align-items: center;">
+    <img src="https://minecraft.wiki/images/thumb/Warden_sniffing.gif/300px-Warden_sniffing.gif?3e874" width=50> E no target_metadata (na linha de baixo) você vai substituir o "None" por "Base.metadata", com o código ficando da seguinte maneira:
+</div>
 
 ```python
 from models.usuario import Base
 target_metadata = Base.metadata
 ```
-<p>(Essa última configuração no arquivo "env.py" sempre será alterada quando eu criar as novas tabelas do banco de dados, mas mandarei os tutoriais conforme altero)</p>
-<p>Último passo para a configuração: Esse passo é importante para o alembic conseguir achar sua pasta. Na sua pasta de projeto raiz (back-voluntariado-extensao) você vai criar uma pasta chamada "database" sem as aspas.</p>
-<p>Com tudo isso configurado, vamos agora criar o banco de dados. Talvez funciona com aquele mesmo terminal que você estava aberto, mas eu sugiro você fechar o terminal e abrir outro na pasta raiz do projeto, talvez ele tenha que recarregar algumas alterações. Com um novo terminal aberto vamos rodar o seguinte comando:</p>
+<div style="display: flex; align-items: center;">
+    <img src="https://minecraft.wiki/images/thumb/Warden_sniffing.gif/300px-Warden_sniffing.gif?3e874" width=50> (Essa última configuração no arquivo "env.py" sempre será alterada quando eu criar as novas tabelas do banco de dados, mas mandarei os tutoriais conforme altero)
+</div>
+<div style="display: flex; align-items: center;">
+    <img src="https://minecraft.wiki/images/thumb/Warden_sniffing.gif/300px-Warden_sniffing.gif?3e874" width=50> Último passo para a configuração: Esse passo é importante para o alembic conseguir achar sua pasta. Na sua pasta de projeto raiz (back-voluntariado-extensao) você vai criar uma pasta chamada "database" sem as aspas.
+</div>
+<div style="display: flex; align-items: center;">
+    <img src="https://minecraft.wiki/images/thumb/Warden_sniffing.gif/300px-Warden_sniffing.gif?3e874" width=50> Com tudo isso configurado, vamos agora criar o banco de dados. Talvez funciona com aquele mesmo terminal que você estava aberto, mas eu sugiro você fechar o terminal e abrir outro na pasta raiz do projeto, talvez ele tenha que recarregar algumas alterações. Com um novo terminal aberto vamos rodar o seguinte comando:
+</div>
 
 ```python
 alembic revision --autogenerate -m "Inital migration"
 ```
-<p>Se ele retornar o seguinte comando no terminal:</p>
+<div style="display: flex; align-items: center;">
+    <img src="https://minecraft.wiki/images/thumb/Warden_sniffing.gif/300px-Warden_sniffing.gif?3e874" width=50> Se ele retornar o seguinte comando no terminal:
+</div>
 
 ```shell
 INFO  [alembic.runtime.migration] Context impl SQLiteImpl.
@@ -120,11 +137,19 @@ INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
 INFO  [alembic.runtime.plugins] setting up autogenerate plugin alembic.autogenerate.schemas
 [...]
 ```
-<p>Você pode digitar o próximo e último comando:</p>
+<div style="display: flex; align-items: center;">
+    <img src="https://minecraft.wiki/images/thumb/Warden_sniffing.gif/300px-Warden_sniffing.gif?3e874" width=50> Você pode digitar o próximo e último comando:
+</div>
 
 ```shell
 alembic upgrade head
 ```
-<p>Agora você pode consultar agora dentro da sua pasta "database" que será gerado um arquivo banco.db, ele é o arquivo do "banco de dados" onde será guardado todas as informações que você armazenar e modificar.</p>
-<p>Suponho que vocês não tenham essa extensão baixada, mas para ver melhor este arquivo banco.db você pode instalar no VS Code uma extensão chamada SQLite Viewer (O desenho é de um SQL com uma pena azul), isso vai melhorar a sua visualização no arquivo.
-OBS: Isso é só um visualizador, você não vai conseguir alterar nada direto pelo arquivo do banco. Somente pelas rotas.</p>
+<div style="display: flex; align-items: center;">
+    <img src="https://minecraft.wiki/images/thumb/Warden_sniffing.gif/300px-Warden_sniffing.gif?3e874" width=50> Agora você pode consultar agora dentro da sua pasta "database" que será gerado um arquivo banco.db, ele é o arquivo do "banco de dados" onde será guardado todas as informações que você armazenar e modificar.
+</div>
+<div style="display: flex; align-items: center;">
+    <img src="https://minecraft.wiki/images/thumb/Warden_sniffing.gif/300px-Warden_sniffing.gif?3e874" width=50> Suponho que vocês não tenham essa extensão baixada, mas para ver melhor este arquivo banco.db você pode instalar no VS Code uma extensão chamada SQLite Viewer (O desenho é de um SQL com uma pena azul), isso vai melhorar a sua visualização no arquivo.
+</div>
+<div style="display: flex; align-items: center;">
+    <img src="https://minecraft.wiki/images/thumb/Warden_sniffing.gif/300px-Warden_sniffing.gif?3e874" width=50> OBS: Isso é só um visualizador, você não vai conseguir alterar nada direto pelo arquivo do banco. Somente pelas rotas.
+</div>
