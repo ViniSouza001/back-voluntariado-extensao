@@ -3,9 +3,13 @@
 <br>
     <h1>Instalação</h1>
 <br>
-<div style="display: flex; align-items: center; gap: 10px">
-    <img src="https://img1.picmix.com/output/stamp/normal/0/4/2/8/2648240_62c56.gif" width=30>Após fazer a clonagem do repositório no computador, segue os passos abaixo:
-</div>
+<table>
+    <tr>
+        <td><img src="https://img1.picmix.com/output/stamp/normal/0/4/2/8/2648240_62c56.gif" width=30></td>
+        <td>Após fazer a clonagem do repositório no computador, segue os passos abaixo:</td>
+    </tr>
+
+</table>
 
 <div style="display: flex; align-items: center; gap: 10px">
     <img src="https://img1.picmix.com/output/stamp/normal/0/4/2/8/2648240_62c56.gif" width=30>Criar um arquivo na pasta raiz do projeto (back-voluntariado-extensao) chamado .env
