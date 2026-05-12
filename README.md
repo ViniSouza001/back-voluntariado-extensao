@@ -52,18 +52,20 @@ alembic init alembic
     <img src="https://preview.redd.it/trying-to-find-the-original-artist-behind-these-pixel-art-v0-h7mzbi1myiie1.gif?width=617&auto=webp&s=ec0a87a19a6bdbded3ec493aff2d987ce147ce07" width=50> Dessa forma, dois itens serão criados: Um arquivo chamado "Alembic.ini" e uma pasta chamada "alembic"
 </div>
 
-<div style="display: flex; align-items: center; gap: 10px;">
-<img src="https://media.tenor.com/3YHLRFmS-SYAAAAj/minecraft.gif" width=70>
+<!-- --------------------------------- -->
 <h2>Configuração arquivo alembic.ini</h2>
+
+<div style="display: flex; align-items: center;">
+    <img src="https://media.tenor.com/3YHLRFmS-SYAAAAj/minecraft.gif" width=50> Dentro do arquivo "alembic.init" você vai editar a linha 89 dele, que é para estar escrito o seguinte:
 </div>
-<br>
-<p>Dentro do arquivo "alembic.init" você vai editar a linha 89 dele, que é para estar escrito o seguinte:</p>
 
 ```python
 sqlalchemy.url = driver://user:pass@localhost/dbname
 ```
 
-<p>E você vai mudar para:</p>
+<div style="display: flex; align-items: center;">
+    <img src="https://media.tenor.com/3YHLRFmS-SYAAAAj/minecraft.gif" width=50> E você vai mudar para:
+</div>
 
 ```python
 sqlalchemy.url = sqlite:///database/banco.db
