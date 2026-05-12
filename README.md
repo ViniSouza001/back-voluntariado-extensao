@@ -4,13 +4,13 @@
     <h1>Instalação</h1>
 <br>
 <div style="display: flex; align-items: center; gap: 10px">
-    <img src="https://img1.picmix.com/output/stamp/normal/0/4/2/8/2648240_62c56.gif" style="margin-bottom: 10px" width=30>Após fazer a clonagem do repositório no computador, segue os passos abaixo:
+    <img src="https://img1.picmix.com/output/stamp/normal/0/4/2/8/2648240_62c56.gif" style="margin-top: 10px" width=30>Após fazer a clonagem do repositório no computador, segue os passos abaixo:
 </div>
 <div style="display: flex; align-items: center; gap: 10px">
-    <img src="https://img1.picmix.com/output/stamp/normal/0/4/2/8/2648240_62c56.gif" style="margin-bottom: 10px" width=30>Criar um arquivo na pasta raiz do projeto (back-voluntariado-extensao) chamado .env
+    <img src="https://img1.picmix.com/output/stamp/normal/0/4/2/8/2648240_62c56.gif" style="margin-top: 10px" width=30>Criar um arquivo na pasta raiz do projeto (back-voluntariado-extensao) chamado .env
 </div>
 <div style="display: flex; align-items: center; gap: 10px">
-    <img src="https://img1.picmix.com/output/stamp/normal/0/4/2/8/2648240_62c56.gif" style="margin-bottom: 10px" width=30>Nesse arquivo você pode copiar as duas linhas abaixo
+    <img src="https://img1.picmix.com/output/stamp/normal/0/4/2/8/2648240_62c56.gif" style="margin-top: 10px" width=30>Nesse arquivo você pode copiar as duas linhas abaixo
 </div>
 
 ```env
@@ -18,10 +18,10 @@ SECRET_KEY=pGiggPz2p8xndOWQnTBY6fN3G3asyUa4
 ALGORITHM=HS256
 ```
 <div style="display: flex; align-items: center; gap: 10px">
-    <img src="https://img1.picmix.com/output/stamp/normal/0/4/2/8/2648240_62c56.gif" style="margin-bottom: 10px" width=30> Dentro da pasta "notes" você pode abrir o arquivo dependencias.txt
+    <img src="https://img1.picmix.com/output/stamp/normal/0/4/2/8/2648240_62c56.gif" style="margin-top: 10px" width=30> Dentro da pasta "notes" você pode abrir o arquivo dependencias.txt
 </div>
 <div style="display: flex; align-items: center; gap: 10px; justify-content: center; text-align: center;">
-    <img src="https://img1.picmix.com/output/stamp/normal/0/4/2/8/2648240_62c56.gif" style="margin-bottom: 10px" width=30>Após isso você vai copiar o conteúdo no arquivo, abrir um terminal na raiz da pasta do projeto e mandar esse comando (precisa ter o Python instalado na máquina)
+    <img src="https://img1.picmix.com/output/stamp/normal/0/4/2/8/2648240_62c56.gif" style="margin-top: 10px" width=30>Após isso você vai copiar o conteúdo no arquivo, abrir um terminal na raiz da pasta do projeto e mandar esse comando (precisa ter o Python instalado na máquina)
 </div>
 <div style="display: flex; align-items: center; gap: 10px">
     <img src="https://img1.picmix.com/output/stamp/normal/0/4/2/8/2648240_62c56.gif" width=30>Para que não tiver o Pyhton, segue o link
