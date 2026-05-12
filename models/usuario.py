@@ -17,7 +17,7 @@ class Usuario(Base):
     confirmado = Column("confirmado", Boolean, nullable=False)
     admin = Column("admin", Boolean, nullable=False)
 
-    def __init__(self, nome, email, senha, data_nasc, cidade, uf, confirmado, admin=False):
+    def __init__(self, nome, email, senha, data_nasc, cidade, uf, confirmado=False, admin=False):
         self.nome = nome
         self.email = email
         self.senha = senha

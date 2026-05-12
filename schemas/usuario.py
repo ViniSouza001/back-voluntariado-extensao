@@ -9,11 +9,12 @@ class UsuarioSchema(BaseModel):
     data_nasc: date
     cidade: str
     uf: str
-    admin: Optional[bool]
+    confirmado: Optional[bool] = False
+    admin: Optional[bool] = False
 
     # para o python não reconhecer esse Schema como um dicionário
     class Config:
-        from_attributes = True
+        orm_mode = True
     
 
 
