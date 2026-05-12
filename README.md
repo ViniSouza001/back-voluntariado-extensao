@@ -45,20 +45,22 @@ ALGORITHM=HS256
 <h1>Configuração do banco</h1>
 <br>
 
-<div style="display: flex; align-items: center;">
-    <img src="https://preview.redd.it/trying-to-find-the-original-artist-behind-these-pixel-art-v0-h7mzbi1myiie1.gif?width=617&auto=webp&s=ec0a87a19a6bdbded3ec493aff2d987ce147ce07" width=50> Ao terminar a configuração anterior, bora para a criação do banco (você só executa 1 vez)
-</div>
-<div style="display: flex; align-items: center;">
-    <img src="https://preview.redd.it/trying-to-find-the-original-artist-behind-these-pixel-art-v0-h7mzbi1myiie1.gif?width=617&auto=webp&s=ec0a87a19a6bdbded3ec493aff2d987ce147ce07" width=50> Com o terminal ainda aberto na pasta do projeto, você vai rodar a linha de comando:
-</div>
+<p>
+    <img src="https://preview.redd.it/trying-to-find-the-original-artist-behind-these-pixel-art-v0-h7mzbi1myiie1.gif?width=617&auto=webp&s=ec0a87a19a6bdbded3ec493aff2d987ce147ce07" width=50 align="middle">&nbsp;&nbsp;
+    Ao terminar a configuração anterior, bora para a criação do banco (você só executa 1 vez)
+</p>
+<p>
+    <img src="https://preview.redd.it/trying-to-find-the-original-artist-behind-these-pixel-art-v0-h7mzbi1myiie1.gif?width=617&auto=webp&s=ec0a87a19a6bdbded3ec493aff2d987ce147ce07" width=50 align="middle">&nbsp;&nbsp;
+    Com o terminal ainda aberto na pasta do projeto, você vai rodar a linha de comando:
+</p>
 
 ```shell
 alembic init alembic
 ```
-
-<div style="display: flex; align-items: center;">
-    <img src="https://preview.redd.it/trying-to-find-the-original-artist-behind-these-pixel-art-v0-h7mzbi1myiie1.gif?width=617&auto=webp&s=ec0a87a19a6bdbded3ec493aff2d987ce147ce07" width=50> Dessa forma, dois itens serão criados: Um arquivo chamado "Alembic.ini" e uma pasta chamada "alembic"
-</div>
+<p>
+    <img src="https://preview.redd.it/trying-to-find-the-original-artist-behind-these-pixel-art-v0-h7mzbi1myiie1.gif?width=617&auto=webp&s=ec0a87a19a6bdbded3ec493aff2d987ce147ce07" width=50 align="middle">&nbsp;&nbsp;
+    Dessa forma, dois itens serão criados: Um arquivo chamado "Alembic.ini" e uma pasta chamada "alembic"
+</p>
 
 <!-- --------------------------------- -->
 <h2>Configuração arquivo alembic.ini</h2>
