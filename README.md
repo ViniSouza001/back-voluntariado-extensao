@@ -1,10 +1,7 @@
 # back-voluntariado-extensao
 <p>Este é o back-end que estou estruturando para o nosso projeto de voluntários</p>
 <br>
-<div style="display: flex; align-items: center; gap: 10px;">
     <h1>Instalação</h1>
-    <img src="https://img1.picmix.com/output/stamp/normal/0/4/2/8/2648240_62c56.gif" width="60">
-</div>
 <br>
 <p>Após fazer a clonagem do repositório no computador, segue os passos abaixo:</p>
 <ul>
@@ -17,12 +14,19 @@ SECRET_KEY=pGiggPz2p8xndOWQnTBY6fN3G3asyUa4
 ALGORITHM=HS256
 ```
 
-<ul>
-    <li>Dentro da pasta "notes" você pode abrir o arquivo dependencias.txt</li>
-    <li>Após isso você vai copiar o conteúdo no arquivo, abrir um terminal na raiz da pasta do projeto e mandar esse comando (precisa ter o Python instalado na máquina)</li>
-    <li>Para que não tiver o Pyhton, segue o link</li>
-    <li><a href="https://www.python.org/ftp/python/3.14.5/python-3.14.5-arm64.exe">Instalador</a></li>
-</ul>
+<div style="display: flex; align-items: center; gap: 10px">
+    <img src="https://img1.picmix.com/output/stamp/normal/0/4/2/8/2648240_62c56.gif" width=30>Dentro da pasta "notes" você pode abrir o arquivo dependencias.txt
+</div>
+<div style="display: flex; align-items: center; gap: 10px">
+    <img src="https://img1.picmix.com/output/stamp/normal/0/4/2/8/2648240_62c56.gif" width=30>Após isso você vai copiar o conteúdo no arquivo, abrir um terminal na raiz da pasta do projeto e mandar esse comando (precisa ter o Python instalado na máquina)
+</div>
+<div style="display: flex; align-items: center; gap: 10px">
+    <img src="https://img1.picmix.com/output/stamp/normal/0/4/2/8/2648240_62c56.gif" width=30>Para que não tiver o Pyhton, segue o link
+</div>
+<div style="display: flex; align-items: center; gap: 10px">
+    <img src="https://img1.picmix.com/output/stamp/normal/0/4/2/8/2648240_62c56.gif" width=30><a href="https://www.python.org/ftp/python/3.14.5/python-3.14.5-arm64.exe">Instalador</a>
+</div>
+
 <br>
 <div style="display: flex; align-items: center; gap: 10px;">
     <img src="https://preview.redd.it/trying-to-find-the-original-artist-behind-these-pixel-art-v0-h7mzbi1myiie1.gif?width=617&auto=webp&s=ec0a87a19a6bdbded3ec493aff2d987ce147ce07" width=100>
