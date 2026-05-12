@@ -9,6 +9,7 @@ alembic.ini
 # Ambiente virtual
 venv/
 .env/
+*.env
 
 # banco de dados
 database/*.db
