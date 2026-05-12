@@ -14,7 +14,7 @@ class Usuario(Base):
     data_nasc = Column("data_nasc", Date, nullable=False)
     cidade = Column("cidade", String, nullable=False)
     uf = Column("uf", String, nullable=False)
-    confirmado = Column("Confirmado", Boolean, nullable=False)
+    confirmado = Column("confirmado", Boolean, nullable=False)
     admin = Column("admin", Boolean, nullable=False)
 
     def __init__(self, nome, email, senha, data_nasc, cidade, uf, confirmado, admin=False):
