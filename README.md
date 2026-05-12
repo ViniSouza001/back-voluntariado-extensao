@@ -65,17 +65,18 @@ alembic init alembic
 <!-- --------------------------------- -->
 <h2>Configuração arquivo alembic.ini</h2>
 
-<div style="display: flex; align-items: center;">
-    <img src="https://media.tenor.com/3YHLRFmS-SYAAAAj/minecraft.gif" width=50> Dentro do arquivo "alembic.init" você vai editar a linha 89 dele, que é para estar escrito o seguinte:
-</div>
+<p>
+    <img src="https://media.tenor.com/3YHLRFmS-SYAAAAj/minecraft.gif" width=50 align="middle">
+    Dentro do arquivo "alembic.init" você vai editar a linha 89 dele, que é para estar escrito o seguinte:
+</p>
 
 ```python
 sqlalchemy.url = driver://user:pass@localhost/dbname
 ```
-
-<div style="display: flex; align-items: center;">
-    <img src="https://media.tenor.com/3YHLRFmS-SYAAAAj/minecraft.gif" width=50> E você vai mudar para:
-</div>
+<p>
+    <img src="https://media.tenor.com/3YHLRFmS-SYAAAAj/minecraft.gif" width=50 align="middle">
+    E você vai mudar para:
+</p>
 
 ```python
 sqlalchemy.url = sqlite:///database/banco.db
@@ -84,17 +85,19 @@ sqlalchemy.url = sqlite:///database/banco.db
 <!-- ----------------------------- -->
 <h2>Configuração arquivo env.py</h2>
 
-<div style="display: flex; align-items: center;">
-    <img src="https://minecraft.wiki/images/thumb/Warden_sniffing.gif/300px-Warden_sniffing.gif?3e874" width=50> Agora dentro da pasta "alembic" você vai abrir o arquivo "env.py" e logo abaixo da linha 6 onde está escrito
-</div>
+<p>
+    <img src="https://minecraft.wiki/images/thumb/Warden_sniffing.gif/300px-Warden_sniffing.gif?3e874" width=50 align="middle">
+    Agora dentro da pasta "alembic" você vai abrir o arquivo "env.py" e logo abaixo da linha 6 onde está escrito
+</p>
 
 ```python
 from alembic import context
 ```
 
-<div style="display: flex; align-items: center;">
-    <img src="https://minecraft.wiki/images/thumb/Warden_sniffing.gif/300px-Warden_sniffing.gif?3e874" width=50> Você pode quebrar 2 linhas e digitar o código abaixo:
-</div>
+<p>
+    <img src="https://minecraft.wiki/images/thumb/Warden_sniffing.gif/300px-Warden_sniffing.gif?3e874" width=50 align="middle">
+    Você pode quebrar 2 linhas e digitar o código abaixo:
+</p>
 
 ```python
 import sys
@@ -102,53 +105,56 @@ import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 ```
 
-<div style="display: flex; align-items: center;">
-    <img src="https://minecraft.wiki/images/thumb/Warden_sniffing.gif/300px-Warden_sniffing.gif?3e874" width=50> Depois um pouco abaixo do seu código, você vai procurar onde está escrito:
-</div>
+<p>
+    <img src="https://minecraft.wiki/images/thumb/Warden_sniffing.gif/300px-Warden_sniffing.gif?3e874" width=50 align="middle">
+    Depois um pouco abaixo do seu código, você vai procurar onde está escrito:
+</p>
 
 ```python
 target_metadata = None
 ```
-<div style="display: flex; align-items: center;">
-    <img src="https://minecraft.wiki/images/thumb/Warden_sniffing.gif/300px-Warden_sniffing.gif?3e874" width=50> Acima dessa linha, você vai adicionar uma importação, digitando o seguinte:
-</div>
+<p>
+    <img src="https://minecraft.wiki/images/thumb/Warden_sniffing.gif/300px-Warden_sniffing.gif?3e874" width=50 align="middle">
+    Acima dessa linha, você vai adicionar uma importação, digitando o seguinte:
+</p>
 
 ```python
 from database.database import Base
 ```
-
-<div style="display: flex; align-items: center;">
-    <img src="https://minecraft.wiki/images/thumb/Warden_sniffing.gif/300px-Warden_sniffing.gif?3e874" width=50> E logo abaixo, você vai fazer outra importação que é o seguinte:
-</div>
+<p>
+    <img src="https://minecraft.wiki/images/thumb/Warden_sniffing.gif/300px-Warden_sniffing.gif?3e874" width=50 align="middle">
+    E logo abaixo, você vai fazer outra importação que é o seguinte:
+</p>
 
 ```python
 import models
 ```
-<div style="display: flex; align-items: center;">
-    <img src="https://minecraft.wiki/images/thumb/Warden_sniffing.gif/300px-Warden_sniffing.gif?3e874" width=50> E no target_metadata (na linha de baixo) você vai substituir o "None" por "Base.metadata", com o código ficando da seguinte maneira:
-</div>
+<p>
+    <img src="https://minecraft.wiki/images/thumb/Warden_sniffing.gif/300px-Warden_sniffing.gif?3e874" width=50 align="middle">
+    E no target_metadata (na linha de baixo) você vai substituir o "None" por "Base.metadata", com o código ficando da seguinte maneira:
+</p>
 
 ```python
 from database.database import Base
 import models
 target_metadata = Base.metadata
 ```
-<div style="display: flex; align-items: center;">
-    <img src="https://minecraft.wiki/images/thumb/Warden_sniffing.gif/300px-Warden_sniffing.gif?3e874" width=50> (Essa última configuração no arquivo "env.py" sempre será alterada quando eu criar as novas tabelas do banco de dados, mas mandarei os tutoriais conforme altero)
-</div>
-<div style="display: flex; align-items: center;">
-    <img src="https://minecraft.wiki/images/thumb/Warden_sniffing.gif/300px-Warden_sniffing.gif?3e874" width=50> Último passo para a configuração: Esse passo é importante para o alembic conseguir achar sua pasta. Na sua pasta de projeto raiz (back-voluntariado-extensao) você vai criar uma pasta chamada "database" sem as aspas.
-</div>
-<div style="display: flex; align-items: center;">
-    <img src="https://minecraft.wiki/images/thumb/Warden_sniffing.gif/300px-Warden_sniffing.gif?3e874" width=50> Com tudo isso configurado, vamos agora criar o banco de dados. Talvez funciona com aquele mesmo terminal que você estava aberto, mas eu sugiro você fechar o terminal e abrir outro na pasta raiz do projeto, talvez ele tenha que recarregar algumas alterações. Com um novo terminal aberto vamos rodar o seguinte comando:
-</div>
+<p>
+    <img src="https://minecraft.wiki/images/thumb/Warden_sniffing.gif/300px-Warden_sniffing.gif?3e874" width=50 align="middle">
+    (Essa última configuração no arquivo "env.py" sempre será alterada quando eu criar as novas tabelas do banco de dados, mas mandarei os tutoriais conforme altero)
+</p>
+<p>
+    <img src="https://minecraft.wiki/images/thumb/Warden_sniffing.gif/300px-Warden_sniffing.gif?3e874" width=50 align="middle">
+    Com tudo isso configurado, vamos agora criar o banco de dados. Talvez funciona com aquele mesmo terminal que você estava aberto, mas eu sugiro você fechar o terminal e abrir outro na pasta raiz do projeto, talvez ele tenha que recarregar algumas alterações. Com um novo terminal aberto vamos rodar o seguinte comando:
+</p>
 
 ```python
 alembic revision --autogenerate -m "Inital migration"
 ```
-<div style="display: flex; align-items: center;">
-    <img src="https://minecraft.wiki/images/thumb/Warden_sniffing.gif/300px-Warden_sniffing.gif?3e874" width=50> Se ele retornar o seguinte comando no terminal:
-</div>
+<p>
+    <img src="https://minecraft.wiki/images/thumb/Warden_sniffing.gif/300px-Warden_sniffing.gif?3e874" width=50 align="middle">
+    Se ele retornar o seguinte comando no terminal:
+</p>
 
 ```shell
 INFO  [alembic.runtime.migration] Context impl SQLiteImpl.
