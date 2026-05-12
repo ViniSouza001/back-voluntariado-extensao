@@ -5,12 +5,12 @@
 <br>
 
 <p>
-    <img src="https://img1.picmix.com/output/stamp/normal/0/4/2/8/2648240_62c56.gif" width=30 align="middle">&nbsp;&nbsp;
+    <img src="https://img1.picmix.com/output/stamp/normal/0/4/2/8/2648240_62c56.gif" width=30 align="middle" hspace=10>
     Após fazer a clonagem do repositório no computador, segue os passos abaixo:
 </p>
 
 <p>
-    <img src="https://img1.picmix.com/output/stamp/normal/0/4/2/8/2648240_62c56.gif" width=30 align="middle">&nbsp;&nbsp;
+    <img src="https://img1.picmix.com/output/stamp/normal/0/4/2/8/2648240_62c56.gif" width=30 align="middle" hspace=10>
     Criar um arquivo na pasta raiz do projeto (back-voluntariado-extensao) chamado .env
 </p>
 <p>
