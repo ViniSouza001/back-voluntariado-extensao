@@ -1,13 +1,20 @@
+# dependencias
 from fastapi import APIRouter, Depends, HTTPException
-from schemas.usuario import UsuarioSchema
-from services.email_service import enviar_confirmacao
+from sqlalchemy.orm import Session
+# arquivos
+from main import bcrypt_context, ALGORITHM, SECRET_KEY
 from dependencies import get_session
+from services.email_service import enviar_confirmacao
+from functions.auth_function import autenticar_usuario
+from functions.token_function import criar_token
+# python
 import secrets
 from datetime import datetime, timedelta
-from main import bcrypt_context, ALGORITHM, SECRET_KEY
-from sqlalchemy.orm import Session
+# models
 from models.usuario import Usuario
 from models.confirmacao_email import ConfirmacaoEmail
+# schemas
+from schemas.usuario import UsuarioSchema, LoginSchema
 
 # roteamento
 auth_router = APIRouter(prefix="/auth", tags=["auth"])
@@ -74,3 +81,15 @@ async def confirmar_email(token: str, session: Session = Depends(get_session)):
     session.commit()
 
     return {"mensagem": "Usuário confirmado com sucesso! Você pode fazer login agora"}
+
+@auth_router.post("/login")
+async def login(login_schema: LoginSchema, session: Session = Depends(get_session)):
+    usuario = autenticar_usuario(login_schema.email, login_schema.senha, session)
+    # se der erro ele já faz validação lá dentro
+    access_token = criar_token(usuario.id)
+    refresh_token = criar_token(usuario.id, duracao_token=timedelta(days=7))
+    return {
+       "access_token": access_token,
+       "refresh_token": refresh_token,
+       "token_type": "bearer"
+    }

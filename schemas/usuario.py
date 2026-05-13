@@ -14,8 +14,13 @@ class UsuarioSchema(BaseModel):
     # para o python não reconhecer esse Schema como um dicionário
     class Config:
         orm_mode = True
-    
 
+class LoginSchema(BaseModel):
+    email: EmailStr
+    senha: str
+
+    class Config:
+        from_attributes = True
 
     
 # class UsuarioResponseSchema(BaseModel):
