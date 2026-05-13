@@ -299,3 +299,30 @@ INFO:     Started reloader process [16916] using StatReload
     <img src="./assets/piglin-dancing.gif" width=60 align="middle">&nbsp;&nbsp;
     O importante é o back-end não deixar passar erros, por exemplo, você não colocar a informação de "nome", "email", "senha" ou colocar uma "data_nasc" diferente do padrão, por exemplo "13-07-2005", ou e-mail sem '@' ou '.com' então qualquer erro suspeito que encontrarem durante a execução, por favor me avisem.
 </p>
+
+<h1>Configuração para verificação de e-mail</h1>
+<p>
+    <img src="./assets/zumbizinho.gif" width=100 align="middle">
+    Primeiro vamos criar a migração do banco de dados para atualizar a tabela nova. Digite no CMD
+</p>
+
+```cmd
+alembic revision --autogenerate -m "confirmacao email"
+```
+<p>
+    <img src="./assets/zumbizinho.gif" width=100 align="middle">
+    E digitar o próximo comando:
+</p>
+
+```cmd
+alembic upgrade head
+```
+
+<p>
+    <img src="./assets/zumbizinho.gif" width=100 align="middle">
+    E vamos instalar a seguinte biblioteca rodando no terminal:
+</p>
+
+```cmd
+pip install fastapi-mail
+```
