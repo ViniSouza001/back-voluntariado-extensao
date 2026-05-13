@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Column, String, Integer, Boolean, Float, ForeignKey, TIMESTAMP, Date, Enum
+from sqlalchemy import Column, String, Integer, Boolean, Float, ForeignKey, TIMESTAMP, Date, Enum
 from enum import Enum as PyEnum
 from sqlalchemy.orm import relationship
 
@@ -17,12 +17,12 @@ class Usuario(Base):
     confirmado = Column("confirmado", Boolean, nullable=False)
     admin = Column("admin", Boolean, nullable=False)
 
-    def __init__(self, nome, email, senha, data_nasc, cidade, uf, confirmado=False, admin=False):
+    def __init__(self, nome, email, senha, data_nasc, cidade, uf, admin=False):
         self.nome = nome
         self.email = email
         self.senha = senha
         self.data_nasc = data_nasc
         self.cidade = cidade
         self.uf = uf
-        self.confirmado = confirmado
+        self.confirmado = False
         self.admin = admin
