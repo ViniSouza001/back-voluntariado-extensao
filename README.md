@@ -22,6 +22,7 @@
 ```env
 SECRET_KEY=pGiggPz2p8xndOWQnTBY6fN3G3asyUa4
 ALGORITHM=HS256
+ACCESS_TOKEN_EXPIRE_MINUTES=30
 ```
 <p>
     <img src="https://img1.picmix.com/output/stamp/normal/0/4/2/8/2648240_62c56.gif" width=30 align="middle">&nbsp;&nbsp;

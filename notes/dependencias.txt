@@ -1,1 +1,1 @@
-pip install fastapi uvicorn sqlalchemy passlib[bcrypt] python-jose[criptography] python-dotenv python-multipart sqlalchemy_utils alembic fastapi-mail
+pip install fastapi uvicorn sqlalchemy passlib[bcrypt] bcrypt<5.0 python-jose[criptography] python-dotenv python-multipart sqlalchemy_utils alembic fastapi-mail

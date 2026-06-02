@@ -1,32 +1,34 @@
-# dependencias
+### dependencias
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-# arquivos
+
+### arquivos
 from main import bcrypt_context, ALGORITHM, SECRET_KEY
 from dependencies import get_session
 from services.email_service import enviar_confirmacao
-from functions.auth_function import autenticar_usuario
+from functions.user_function import criar_usuario, autenticar_usuario
 from functions.token_function import criar_token
-# python
+
+### python
 import secrets
 from datetime import datetime, timedelta
-# models
+
+### models
 from models.usuario import Usuario
 from models.confirmacao_email import ConfirmacaoEmail
-# schemas
+
+### schemas
 from schemas.usuario import UsuarioSchema, LoginSchema
 
-# roteamento
+### roteamento
 auth_router = APIRouter(prefix="/auth", tags=["auth"])
 
 @auth_router.post("/register")
 async def criar_conta(usuario_schema: UsuarioSchema, session: Session = Depends(get_session)):
-    usuario = session.query(Usuario).filter(Usuario.email == usuario_schema.email).first()
-    print(usuario)
-    if usuario:
-        raise HTTPException(status_code=400, detail="E-mail do usuário já cadastrado")
-    else:
-        senha_criptografada = bcrypt_context.hash(usuario_schema.senha)
+        
+        senha_criptografada = criar_usuario(usuario_schema, session)
+        print(senha_criptografada)
+
         novo_usuario = Usuario(
             usuario_schema.nome,
             usuario_schema.email,
@@ -38,7 +40,7 @@ async def criar_conta(usuario_schema: UsuarioSchema, session: Session = Depends(
             )
         session.add(novo_usuario)
         session.commit()
-        
+
         session.refresh(novo_usuario)
 
         token = secrets.token_urlsafe(32)
@@ -66,14 +68,14 @@ async def deletar_usuario(id_usuario, session: Session = Depends(get_session)):
         session.delete(usuario)
         session.commit()
         return {"Mensagem": "Usuário deletado com sucesso"}
-    
+
 @auth_router.get("/confirmar-email/{token}")
 async def confirmar_email(token: str, session: Session = Depends(get_session)):
     confirmacao = session.query(ConfirmacaoEmail).filter(ConfirmacaoEmail.token == token).first()
 
     if not confirmacao:
         raise HTTPException(status_code=404, detail="Token inválido")
-    
+
     usuario = session.query(Usuario).filter(Usuario.id == confirmacao.id_usuario).first()
 
     usuario.confirmado = True
@@ -89,7 +91,8 @@ async def login(login_schema: LoginSchema, session: Session = Depends(get_sessio
     access_token = criar_token(usuario.id)
     refresh_token = criar_token(usuario.id, duracao_token=timedelta(days=7))
     return {
-       "access_token": access_token,
-       "refresh_token": refresh_token,
-       "token_type": "bearer"
+        "user": usuario.nome,
+        "access_token": access_token,
+        "refresh_token": refresh_token,
+        "token_type": "bearer"
     }
