@@ -24,11 +24,29 @@ class LoginSchema(BaseModel):
         from_attributes = True
 
     
-# class UsuarioResponseSchema(BaseModel):
-#     id: int
-#     nome: str
-#     email: str
-#     data_nasc: date
+class UsuarioDataResponseSchema(BaseModel):
+    nome: str
+    email: str
+    data_nasc: date
+    cidade: str
+    uf: str
 
-#     class Config:
-#         from_attributes = True
+    class Config:
+        from_attributes = True
+
+class UsuarioUpdateSchema(BaseModel):
+    nome: Optional[str] = None
+    data_nasc: Optional[date] = None
+    cidade: Optional[str] = None
+    uf: Optional[str] = None
+
+    class Config:
+        from_attributes = True
+
+class AlterarSenhaSchema(BaseModel):
+    senha_atual: str
+    nova_senha: str
+    confirmar_nova_senha: str
+
+    class Config:
+        from_attributes = True

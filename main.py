@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+# from fastapi.security import OAuth2PasswordBearer
 from passlib.context import CryptContext
 from dotenv import load_dotenv
 import os
@@ -15,7 +16,8 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:3000",
-        "http://localhost:5173",
+        "http://localhost:5500",
+        "http://127.0.0.1:5500",
     ],
     allow_credentials=True,
     allow_methods=["*"],
@@ -25,5 +27,7 @@ app.add_middleware(
 bcrypt_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 from routes.auth_routes import auth_router
+from routes.user_routes import user_router
 
 app.include_router(auth_router)
+app.include_router(user_router)

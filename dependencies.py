@@ -1,7 +1,7 @@
 from sqlalchemy.orm import sessionmaker
 from database.database import db
 
-def get_session():
+def pegar_sessao():
     try:
         Session = sessionmaker(bind=db)
         session = Session()

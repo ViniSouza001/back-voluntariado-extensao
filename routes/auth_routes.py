@@ -1,30 +1,32 @@
-### dependencias
+## dependencias
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-### arquivos
-from main import bcrypt_context, ALGORITHM, SECRET_KEY
-from dependencies import get_session
+## arquivos
+from dependencies import pegar_sessao
 from services.email_service import enviar_confirmacao
 from functions.user_function import criar_usuario, autenticar_usuario
 from functions.token_function import criar_token
 
-### python
+## python
 import secrets
 from datetime import datetime, timedelta
 
-### models
+## functions
+# from functions.auth_functions import...
+
+## models
 from models.usuario import Usuario
 from models.confirmacao_email import ConfirmacaoEmail
 
-### schemas
+## schemas
 from schemas.usuario import UsuarioSchema, LoginSchema
 
-### roteamento
+## roteamento
 auth_router = APIRouter(prefix="/auth", tags=["auth"])
 
 @auth_router.post("/register")
-async def criar_conta(usuario_schema: UsuarioSchema, session: Session = Depends(get_session)):
+async def criar_conta(usuario_schema: UsuarioSchema, session: Session = Depends(pegar_sessao)):
         
         senha_criptografada = criar_usuario(usuario_schema, session)
         print(senha_criptografada)
@@ -60,7 +62,7 @@ async def criar_conta(usuario_schema: UsuarioSchema, session: Session = Depends(
         return {"mensagem": "Usuário criado com sucesso! Confirme sua caixa de e-mail."}
 
 @auth_router.post("/delete/{id_usuario}")
-async def deletar_usuario(id_usuario, session: Session = Depends(get_session)):
+def deletar_usuario(id_usuario, session: Session = Depends(pegar_sessao)):
     usuario = session.query(Usuario).filter(Usuario.id == id_usuario).first()
     if not usuario:
         raise HTTPException(status_code=401, detail="Este usuário não existe")
@@ -70,7 +72,7 @@ async def deletar_usuario(id_usuario, session: Session = Depends(get_session)):
         return {"Mensagem": "Usuário deletado com sucesso"}
 
 @auth_router.get("/confirmar-email/{token}")
-async def confirmar_email(token: str, session: Session = Depends(get_session)):
+def confirmar_email(token: str, session: Session = Depends(pegar_sessao)):
     confirmacao = session.query(ConfirmacaoEmail).filter(ConfirmacaoEmail.token == token).first()
 
     if not confirmacao:
@@ -85,14 +87,13 @@ async def confirmar_email(token: str, session: Session = Depends(get_session)):
     return {"mensagem": "Usuário confirmado com sucesso! Você pode fazer login agora"}
 
 @auth_router.post("/login")
-async def login(login_schema: LoginSchema, session: Session = Depends(get_session)):
+def login(login_schema: LoginSchema, session: Session = Depends(pegar_sessao)):
     usuario = autenticar_usuario(login_schema.email, login_schema.senha, session)
     # se der erro ele já faz validação lá dentro
     access_token = criar_token(usuario.id)
-    refresh_token = criar_token(usuario.id, duracao_token=timedelta(days=7))
     return {
         "user": usuario.nome,
         "access_token": access_token,
-        "refresh_token": refresh_token,
+        # "refresh_token": refresh_token,
         "token_type": "bearer"
     }
