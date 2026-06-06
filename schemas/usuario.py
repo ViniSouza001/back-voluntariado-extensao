@@ -10,11 +10,10 @@ class UsuarioSchema(BaseModel):
     data_nasc: date
     cidade: str
     uf: str
-    admin: Optional[bool] = False
 
     # para o python não reconhecer esse Schema como um dicionário
     class Config:
-        orm_mode = True
+        from_mode = True
 
 class LoginSchema(BaseModel):
     email: EmailStr

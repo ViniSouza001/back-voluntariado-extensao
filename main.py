@@ -18,6 +18,7 @@ app.add_middleware(
         "http://localhost:3000",
         "http://localhost:5500",
         "http://127.0.0.1:5500",
+        "http://127.0.0.1:5173",
     ],
     allow_credentials=True,
     allow_methods=["*"],
@@ -28,6 +29,8 @@ bcrypt_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 from routes.auth_routes import auth_router
 from routes.user_routes import user_router
+from routes.entidade_routes import entity_router
 
 app.include_router(auth_router)
 app.include_router(user_router)
+app.include_router(entity_router)

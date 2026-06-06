@@ -29,7 +29,6 @@ auth_router = APIRouter(prefix="/auth", tags=["auth"])
 async def criar_conta(usuario_schema: UsuarioSchema, session: Session = Depends(pegar_sessao)):
         
         senha_criptografada = criar_usuario(usuario_schema, session)
-        print(senha_criptografada)
 
         novo_usuario = Usuario(
             usuario_schema.nome,
@@ -38,7 +37,6 @@ async def criar_conta(usuario_schema: UsuarioSchema, session: Session = Depends(
             usuario_schema.data_nasc,
             usuario_schema.cidade,
             usuario_schema.uf,
-            usuario_schema.admin
             )
         session.add(novo_usuario)
         session.commit()
@@ -91,9 +89,10 @@ def login(login_schema: LoginSchema, session: Session = Depends(pegar_sessao)):
     usuario = autenticar_usuario(login_schema.email, login_schema.senha, session)
     # se der erro ele já faz validação lá dentro
     access_token = criar_token(usuario.id)
+
     return {
         "user": usuario.nome,
         "access_token": access_token,
-        # "refresh_token": refresh_token,
         "token_type": "bearer"
     }
+
