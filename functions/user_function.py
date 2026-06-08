@@ -1,13 +1,24 @@
 from fastapi import HTTPException
 from models.usuario import Usuario
 from main import bcrypt_context
+from functions.cpf_cnpj_functions import verificar_cpf
 
 MAX_BCRYPT_PASSWORD_BYTES = 72
 
 def criar_usuario(usuario_schema, session):
+
+    # se e-mail já foi cadastrado
     usuario = session.query(Usuario).filter(Usuario.email == usuario_schema.email).first()
     if usuario:
-        raise HTTPException(status_code=400, detail="E-mail do usuário já cadastrado")
+        raise HTTPException(status_code=400, detail="Já existe um usuário com este e-mail")
+    
+    # se cpf já existe
+    usuario = session.query(Usuario).filter(Usuario.cpf == usuario_schema.cpf).first()
+    if usuario:
+        raise HTTPException(status_code=400, detail="Já existe um usuário com este CPF")
+    
+    if not verificar_cpf(usuario_schema.cpf):
+        raise HTTPException(status_code=400, detail="CPF inválido. Verifique todos os dígitos")
 
     senha = usuario_schema.senha
     senha_bytes = senha.encode("utf-8")

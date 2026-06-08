@@ -9,6 +9,7 @@ class Usuario(Base):
 
     id = Column("id", Integer, primary_key=True, autoincrement=True)
     nome = Column("nome", String, nullable=False)
+    cpf = Column("cpf", String(11), nullable=False, unique=True)
     email = Column("email", String, nullable=False)
     senha = Column("senha", String, nullable=False)
     data_nasc = Column("data_nasc", Date, nullable=False)
@@ -23,8 +24,9 @@ class Usuario(Base):
         cascade="all, delete-orphan"
     )
 
-    def __init__(self, nome, email, senha, data_nasc, cidade, uf):
+    def __init__(self, nome, cpf, email, senha, data_nasc, cidade, uf):
         self.nome = nome
+        self.cpf = cpf
         self.email = email
         self.senha = senha
         self.data_nasc = data_nasc

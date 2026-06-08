@@ -28,10 +28,12 @@ auth_router = APIRouter(prefix="/auth", tags=["auth"])
 @auth_router.post("/register")
 async def criar_conta(usuario_schema: UsuarioSchema, session: Session = Depends(pegar_sessao)):
         
+        print(usuario_schema)
         senha_criptografada = criar_usuario(usuario_schema, session)
 
         novo_usuario = Usuario(
             usuario_schema.nome,
+            usuario_schema.cpf,
             usuario_schema.email,
             senha_criptografada,
             usuario_schema.data_nasc,

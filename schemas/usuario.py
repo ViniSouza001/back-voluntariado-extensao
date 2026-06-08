@@ -4,6 +4,7 @@ from datetime import date
 
 class UsuarioSchema(BaseModel):
     nome: str = Field(min_length=3, max_length=100)
+    cpf: str = Field(min_length=11, max_length=11, description="CPF deve conter exatamente 11 dígitos")
     email: EmailStr
     # senha: str = Field(min_length=6, max_length=72, description="A senha deve ter entre 6 e 72 caracteres (limite do bcrypt)")
     senha: str = Field(min_length=6, max_length=72, description="A senha deve ter entre 6 e 72 caracteres")
@@ -25,6 +26,7 @@ class LoginSchema(BaseModel):
     
 class UsuarioDataResponseSchema(BaseModel):
     nome: str
+    cpf: str
     email: str
     data_nasc: date
     cidade: str
