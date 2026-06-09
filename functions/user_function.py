@@ -82,3 +82,4 @@ def alterar_senha(dados, usuario, session):
     session.commit()
 
     return {"mensagem": "Senha alterada com sucesso!"}
+

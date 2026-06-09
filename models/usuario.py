@@ -17,6 +17,7 @@ class Usuario(Base):
     uf = Column("uf", String, nullable=False)
     confirmado = Column("confirmado", Boolean, nullable=False)
     admin = Column("admin", Boolean, nullable=False)
+    foto_perfil = Column("foto_perfil", String, nullable=True)
 
     membros_entidade = relationship (
         "MembroEntidade",

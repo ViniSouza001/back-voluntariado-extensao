@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 # from fastapi.security import OAuth2PasswordBearer
 from passlib.context import CryptContext
 from dotenv import load_dotenv
@@ -26,6 +27,8 @@ app.add_middleware(
 )
 
 bcrypt_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
 from routes.auth_routes import auth_router
 from routes.user_routes import user_router
