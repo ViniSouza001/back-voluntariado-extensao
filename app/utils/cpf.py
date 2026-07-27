@@ -1,19 +1,19 @@
-def normalize_cpf(cpf: str) -> str:
-    return "".join(character for character in cpf if character.isdigit())
+def normalizar_cpf(cpf: str) -> str:
+    return "".join(caractere for caractere in cpf if caractere.isdigit())
 
 
-def is_valid_cpf(cpf: str) -> bool:
-    normalized = normalize_cpf(cpf)
-    if len(normalized) != 11 or normalized == normalized[0] * 11:
+def cpf_valido(cpf: str) -> bool:
+    normalizado = normalizar_cpf(cpf)
+    if len(normalizado) != 11 or normalizado == normalizado[0] * 11:
         return False
 
-    first_sum = sum(int(normalized[index]) * (10 - index) for index in range(9))
-    first_remainder = first_sum % 11
-    first_digit = 0 if first_remainder < 2 else 11 - first_remainder
-    if int(normalized[9]) != first_digit:
+    primeira_soma = sum(int(normalizado[indice]) * (10 - indice) for indice in range(9))
+    primeiro_resto = primeira_soma % 11
+    primeiro_digito = 0 if primeiro_resto < 2 else 11 - primeiro_resto
+    if int(normalizado[9]) != primeiro_digito:
         return False
 
-    second_sum = sum(int(normalized[index]) * (11 - index) for index in range(10))
-    second_remainder = second_sum % 11
-    second_digit = 0 if second_remainder < 2 else 11 - second_remainder
-    return int(normalized[10]) == second_digit
+    segunda_soma = sum(int(normalizado[indice]) * (11 - indice) for indice in range(10))
+    segundo_resto = segunda_soma % 11
+    segundo_digito = 0 if segundo_resto < 2 else 11 - segundo_resto
+    return int(normalizado[10]) == segundo_digito

@@ -1,14 +1,14 @@
-# Volunteer Platform API
+# API da Plataforma de Voluntariado
 
-FastAPI backend for a volunteer platform. It supports account registration, email
-confirmation, JWT authentication, profile management and organization creation.
+Backend em FastAPI para uma plataforma de voluntariado. O sistema oferece cadastro de contas,
+confirmação de e-mail, autenticação com JWT, gerenciamento de perfil e criação de entidades.
 
-## Requirements
+## Requisitos
 
-- Python 3.12 or newer
-- A virtual environment is strongly recommended
+- Python 3.12 ou mais recente
+- É recomendado utilizar um ambiente virtual
 
-## Local setup
+## Configuração local
 
 ```powershell
 python -m venv .venv
@@ -17,75 +17,72 @@ python -m pip install -r requirements-dev.txt
 Copy-Item .env.example .env
 ```
 
-Replace `SECRET_KEY` in `.env` with a long random value. Configure the mail variables and set
-`EMAIL_ENABLED=true` only when SMTP delivery is ready.
+Substitua `CHAVE_SECRETA` no `.env` por um valor aleatório longo. Preencha as configurações de
+e-mail e altere `EMAIL_HABILITADO=true` somente quando o SMTP estiver configurado.
 
-Create or update the local database:
+Crie ou atualize o banco local:
 
 ```powershell
 alembic upgrade head
 ```
 
-Start the API:
+Inicie a API:
 
 ```powershell
-uvicorn app.main:app --reload
+uvicorn app.principal:aplicacao --reload
 ```
 
-Interactive documentation is available at <http://localhost:8000/docs> and the health check
-is available at <http://localhost:8000/health>.
+A documentação interativa fica em <http://localhost:8000/docs> e a verificação de saúde em
+<http://localhost:8000/saude>.
 
-## Main endpoints
+## Endpoints principais
 
-| Method | Path | Purpose |
+| Método | Caminho | Finalidade |
 |---|---|---|
-| `POST` | `/api/v1/auth/register` | Create an account |
-| `POST` | `/api/v1/auth/login` | Obtain a JWT access token |
-| `GET` | `/api/v1/auth/confirm-email/{token}` | Confirm an email address |
-| `POST` | `/api/v1/auth/resend-confirmation` | Request a new confirmation email |
-| `GET` | `/api/v1/users/me` | Read the authenticated profile |
-| `PATCH` | `/api/v1/users/me` | Update the authenticated profile |
-| `PATCH` | `/api/v1/users/me/password` | Change the password |
-| `DELETE` | `/api/v1/users/me` | Delete the authenticated account |
-| `POST` | `/api/v1/organizations` | Create an organization |
+| `POST` | `/api/v1/autenticacao/cadastro` | Criar uma conta |
+| `POST` | `/api/v1/autenticacao/entrar` | Obter um token JWT |
+| `GET` | `/api/v1/autenticacao/confirmar-email/{token}` | Confirmar o e-mail |
+| `POST` | `/api/v1/autenticacao/reenviar-confirmacao` | Reenviar a confirmação |
+| `GET` | `/api/v1/usuarios/eu` | Consultar o próprio perfil |
+| `PATCH` | `/api/v1/usuarios/eu` | Atualizar o próprio perfil |
+| `PATCH` | `/api/v1/usuarios/eu/senha` | Alterar a senha |
+| `DELETE` | `/api/v1/usuarios/eu` | Excluir a própria conta |
+| `POST` | `/api/v1/entidades` | Criar uma entidade |
 
-All protected endpoints expect `Authorization: Bearer <token>`.
+Os endpoints protegidos esperam o cabeçalho `Authorization: Bearer <token>`.
 
-## Project structure
+## Estrutura do projeto
 
 ```text
-app/api/           HTTP routes and FastAPI dependencies
-app/core/          settings, security and application exceptions
-app/db/            SQLAlchemy engine, sessions and declarative base
-app/models/        database table mappings
-app/repositories/  reusable database queries
-app/schemas/       API request and response validation
-app/services/      business use cases and transaction boundaries
-app/utils/         pure validation and formatting functions
-alembic/           versioned database migrations
-database/          local runtime database (not committed)
-docs/              architecture and development documentation
-tests/             unit and API integration tests
-uploads/           runtime user uploads (not committed)
+app/api/           Rotas HTTP e dependências do FastAPI
+app/core/          Configurações, segurança e exceções
+app/db/            Motor, sessões e base do SQLAlchemy
+app/models/        Mapeamento das tabelas do banco
+app/repositories/  Consultas reutilizáveis ao banco
+app/schemas/       Validação das entradas e respostas
+app/services/      Regras de negócio e transações
+app/utils/         Funções puras de validação e formatação
+alembic/           Histórico versionado do banco
+data/              Banco SQLite local, não versionado
+docs/              Documentação de desenvolvimento
+tests/             Testes unitários e de integração
+uploads/           Arquivos enviados em execução, não versionados
 ```
 
-See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the responsibility rules between layers.
+Consulte [docs/ARQUITETURA.md](docs/ARQUITETURA.md) para entender as regras
+entre as camadas.
 
-## Quality checks
+## Verificações de qualidade
 
 ```powershell
-python -m unittest discover -s tests -v
-ruff check .
+python -m pytest
+python -m ruff check .
+python -m ruff format --check .
 alembic check
 ```
 
-## API migration notes
+## Observações sobre nomes externos
 
-The previous Portuguese and mixed-language paths were replaced by the versioned English API.
-The most relevant changes are:
-
-- `/auth/*` became `/api/v1/auth/*`.
-- `/user/me/{token}` became `/api/v1/users/me`; the token belongs in the authorization header.
-- `/entity/entidade` became `/api/v1/organizations`.
-- Unauthenticated `POST /auth/delete/{id}` was replaced by authenticated
-  `DELETE /api/v1/users/me`.
+Alguns nomes permanecem em inglês porque pertencem às bibliotecas ou aos protocolos usados,
+como `FastAPI`, `BaseModel`, `Session`, `upgrade()`, `downgrade()`, `Authorization` e `Bearer`.
+Todo identificador que pertence ao projeto foi escrito em português.

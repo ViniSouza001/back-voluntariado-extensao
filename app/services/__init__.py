@@ -1,1 +1,1 @@
-"""Application use cases and business rules."""
+"""Casos de uso e regras de negócio da aplicação."""

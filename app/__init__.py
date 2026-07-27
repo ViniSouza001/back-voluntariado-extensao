@@ -1,1 +1,1 @@
-"""Volunteer platform backend application package."""
+"""Pacote principal do backend da plataforma de voluntariado."""

@@ -1,1 +1,1 @@
-"""Automated test suite."""
+"""Conjunto de testes automatizados."""

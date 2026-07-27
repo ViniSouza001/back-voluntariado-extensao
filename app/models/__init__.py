@@ -1,6 +1,6 @@
-from app.models.email_confirmation import EmailConfirmation
-from app.models.organization import Organization
-from app.models.organization_member import MemberRole, OrganizationMember
-from app.models.user import User
+from app.models.confirmacao_email import ConfirmacaoEmail
+from app.models.entidade import Entidade
+from app.models.membro_entidade import CargoMembro, MembroEntidade
+from app.models.usuario import Usuario
 
-__all__ = ["EmailConfirmation", "MemberRole", "Organization", "OrganizationMember", "User"]
+__all__ = ["ConfirmacaoEmail", "CargoMembro", "Entidade", "MembroEntidade", "Usuario"]

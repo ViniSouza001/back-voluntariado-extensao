@@ -1,1 +1,1 @@
-"""HTTP API package."""
+"""Camada HTTP da API."""

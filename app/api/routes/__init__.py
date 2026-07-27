@@ -1,1 +1,1 @@
-"""Versioned API route modules."""
+"""Módulos das rotas versionadas da API."""

@@ -1,1 +1,1 @@
-"""Pure utility functions."""
+"""Funções utilitárias puras."""

@@ -1,1 +1,1 @@
-"""Database engine, sessions and declarative base."""
+"""Motor, sessões e base declarativa do banco de dados."""

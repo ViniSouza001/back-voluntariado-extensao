@@ -7,18 +7,18 @@ __pycache__/
 .venv/
 venv/
 
-# Environment and secrets
+# Ambiente e segredos
 .env
 *.env
 !.env.example
 
-# Runtime data
-database/*.db
-database/*.db-*
+# Dados gerados durante a execução
+data/*.db
+data/*.db-*
 uploads/*
 !uploads/.gitkeep
 
-# Editors and operating systems
+# Editores e sistemas operacionais
 .vscode/
 .DS_Store
 Thumbs.db

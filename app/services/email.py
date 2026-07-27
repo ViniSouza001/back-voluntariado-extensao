@@ -2,48 +2,51 @@ import logging
 
 from fastapi_mail import ConnectionConfig, FastMail, MessageSchema
 
-from app.core.config import Settings, get_settings
+from app.core.configuracao import Configuracoes, obter_configuracoes
 
-logger = logging.getLogger(__name__)
+registrador = logging.getLogger(__name__)
 
 
-class EmailService:
-    def __init__(self, settings: Settings | None = None):
-        self.settings = settings or get_settings()
+class ServicoEmail:
+    def __init__(self, configuracoes: Configuracoes | None = None):
+        self.configuracoes = configuracoes or obter_configuracoes()
 
-    async def send_confirmation(self, recipient: str, token: str) -> bool:
-        if not self.settings.email_enabled:
-            logger.warning("Confirmation email was not sent because email delivery is disabled")
+    async def enviar_confirmacao(self, destinatario: str, token: str) -> bool:
+        if not self.configuracoes.email_habilitado:
+            registrador.warning(
+                "O e-mail de confirmação não foi enviado porque o serviço está desativado"
+            )
             return False
 
-        base_url = self.settings.frontend_url.rstrip("/")
-        if base_url:
-            confirmation_url = f"{base_url}/confirm-email?token={token}"
+        url_base = self.configuracoes.url_frontend.rstrip("/")
+        if url_base:
+            url_confirmacao = f"{url_base}/confirmar-email?token={token}"
         else:
-            confirmation_url = (
-                f"http://localhost:8000{self.settings.api_v1_prefix}/auth/confirm-email/{token}"
+            url_confirmacao = (
+                f"http://localhost:8000{self.configuracoes.prefixo_api_v1}"
+                f"/autenticacao/confirmar-email/{token}"
             )
 
-        configuration = ConnectionConfig(
-            MAIL_USERNAME=self.settings.mail_username,
-            MAIL_PASSWORD=self.settings.mail_password,
-            MAIL_FROM=self.settings.mail_from,
-            MAIL_PORT=self.settings.mail_port,
-            MAIL_SERVER=self.settings.mail_server,
+        configuracao = ConnectionConfig(
+            MAIL_USERNAME=self.configuracoes.usuario_email,
+            MAIL_PASSWORD=self.configuracoes.senha_email,
+            MAIL_FROM=self.configuracoes.remetente_email,
+            MAIL_PORT=self.configuracoes.porta_email,
+            MAIL_SERVER=self.configuracoes.servidor_email,
             MAIL_STARTTLS=True,
             MAIL_SSL_TLS=False,
             USE_CREDENTIALS=True,
         )
-        message = MessageSchema(
-            subject="Confirm your account",
-            recipients=[recipient],
-            body=(f"Use the link below to confirm your account:\n\n{confirmation_url}\n"),
+        mensagem = MessageSchema(
+            subject="Confirme sua conta",
+            recipients=[destinatario],
+            body=(f"Use o link abaixo para confirmar sua conta:\n\n{url_confirmacao}\n"),
             subtype="plain",
         )
 
         try:
-            await FastMail(configuration).send_message(message)
+            await FastMail(configuracao).send_message(mensagem)
         except Exception:
-            logger.exception("Failed to send a confirmation email")
+            registrador.exception("Falha ao enviar o e-mail de confirmação")
             return False
         return True

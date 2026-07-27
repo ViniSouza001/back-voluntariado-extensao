@@ -1,1 +1,1 @@
-"""Database query repositories."""
+"""Repositórios de consultas ao banco de dados."""

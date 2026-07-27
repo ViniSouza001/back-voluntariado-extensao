@@ -1,1 +1,1 @@
-"""Application configuration and cross-cutting concerns."""
+"""Configurações e recursos compartilhados da aplicação."""
