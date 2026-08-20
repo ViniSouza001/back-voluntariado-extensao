@@ -35,8 +35,6 @@ python -m venv .venv
 python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 ```
-
-<br>
 <br>
 <!-- TUTORIAL PARA RODAR O BACK-END -->
 <h1>Arquivo .env</h1>
