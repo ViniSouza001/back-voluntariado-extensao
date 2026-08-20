@@ -1,21 +1,31 @@
-# Cache do Python
+# Python
 __pycache__/
 *.pyc
-
-# Alembic
-alembic/
-alembic.ini
-
-# Ambiente virtual
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.venv/
 venv/
-.env/
+
+# Environment and secrets
+.env
+.env.*
 *.env
+!.env.example
 
-# banco de dados
-database/*.db
+# SQLite
+data/*.db
+data/*.db-*
+data/*.db-journal
+data/*.db-wal
+data/*.db-shm
 
-# VSCode
+# Uploads
+uploads/*
+!uploads/.gitkeep
+
+# Editors and operating systems
 .vscode/
-
-# Arquivos de sistema
+.idea/
 .DS_Store
+Thumbs.db

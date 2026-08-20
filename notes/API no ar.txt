@@ -1,9 +1,0 @@
-uvicorn main:app --reload
-
-- uvicorn: é a dependência que instalamos
-
-- main: é o nome do arquivo
-
-- app: a variável que vamos atribuir ao FastAPI
-
-- reload: em toda a alteração do código, não precisa parar a instância e rodar novamente, o reload faz isso ao salvar o arquivo
