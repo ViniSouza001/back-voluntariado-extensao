@@ -17,14 +17,6 @@
 ```shell
 python -m venv .venv
 ```
-<p>
-    <img src="./assets/gif/wolf.gif" width=50 align="middle">&nbsp;&nbsp;
-    Ativar o ambiente virtual
-</p>
-
-```shell
-.\.venv\Scripts\python.exe
-```
 
 <p>
     <img src="./assets/gif/warden_sniffing.webp" width=50 align="middle">
