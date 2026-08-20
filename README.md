@@ -86,15 +86,6 @@ python -c "import secrets; print(secrets.token_urlsafe(64))"
 
 <p>
     <img src="./assets/gif/zumbizinho.gif" width=100 align="middle">
-    Garantir que as pastas existem:
-</p>
-
-```shell
-New-Item -ItemType Directory -Force data, uploads
-```
-
-<p>
-    <img src="./assets/gif/zumbizinho.gif" width=100 align="middle">
     Caso o comando não funcione, você pode apenas ver se na raiz do projeto backend tem as pastas "data" e "uploads"
 </p>
 
