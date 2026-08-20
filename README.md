@@ -17,14 +17,6 @@
 ```shell
 python -m venv .venv
 ```
-<p>
-    <img src="./assets/gif/wolf.gif" width=50 align="middle">&nbsp;&nbsp;
-    Ativar o ambiente virtual
-</p>
-
-```shell
-.\.venv\Scripts\python.exe
-```
 
 <p>
     <img src="./assets/gif/warden_sniffing.webp" width=50 align="middle">
@@ -84,22 +76,13 @@ PORT_EMAIL=587
 </p>
 
 ```shell
-python -c "import secrets; print(secrets.token_urlsafe(64))"
+python -c "import secrets; print(secrets.token_urlsafe(32))"
 ```
 
 <p>
     <img src="./assets/gif/piglin_dancing.gif" width=60 align="middle">&nbsp;&nbsp;
     Copie o código monstruoso do terminal (botão direito do mouse copia o conteúdo selecionado em prompts) e cole o código monstruoso na variável SECRET_KEY do arquivo .env substituido o texto "coloque-uma-chave-secreta-aqui". A geração de chave secretas podem ser feitas por sites também caso seja preferível, esta é apenas uma opção fácil, mas funcional e seguro também
 </p>
-
-<p>
-    <img src="./assets/gif/zumbizinho.gif" width=100 align="middle">
-    Garantir que as pastas existem:
-</p>
-
-```shell
-New-Item -ItemType Directory -Force data, uploads
-```
 
 <p>
     <img src="./assets/gif/zumbizinho.gif" width=100 align="middle">
