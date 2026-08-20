@@ -76,7 +76,7 @@ PORT_EMAIL=587
 </p>
 
 ```shell
-python -c "import secrets; print(secrets.token_urlsafe(64))"
+python -c "import secrets; print(secrets.token_urlsafe(32))"
 ```
 
 <p>
