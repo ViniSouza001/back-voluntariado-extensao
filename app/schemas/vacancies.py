@@ -32,17 +32,18 @@ class CreateVacancies(BaseModel):
     
     title: str = Field(min_length=3, max_length=100)
     description: str = Field(min_length=1, max_length=255)
-    address: str = Field(min_length=1, max_length=255)
     id_entity: int
     starts_at: datetime
     ends_at: datetime
     branch: str = Field(min_length=1, max_length=50)
 
     modality: VacancyModality
-    city: str | None = Field(min_length=1, max_length=100)
-    uf: str | None = Field(min_length=1, max_length=2)
 
-    @field_validator("title", "description", "location", "branch", "city", "uf")
+    address: str = Field(default=None, min_length=1, max_length=255)
+    city: str | None = Field(default=None, min_length=1, max_length=100)
+    uf: str | None = Field(default=None, min_length=2, max_length=2)
+
+    @field_validator("title", "description", "address", "branch", "city", "uf")
     @classmethod
     def field_must_not_be_null(cls, value: str | None) -> str:
         if value is None:
@@ -71,12 +72,13 @@ class UpdateVacancies(BaseModel):
     
     title: str = Field(min_length=3, max_length=100)
     description: str = Field(min_length=1, max_length=255)
-    address: str = Field(min_length=1, max_length=255)
     branch: str = Field(min_length=1, max_length=50)
-    city: str = Field(min_length=1, max_length=100)
-    uf: str = Field(min_length=1, max_length=2)
 
-    @field_validator("title", "description", "location", "branch", "city", "uf")
+    address: str = Field(default=None, min_length=1, max_length=255)
+    city: str = Field(default=None, min_length=1, max_length=100)
+    uf: str = Field(default=None, min_length=2, max_length=2)
+
+    @field_validator("title", "description", "address", "branch", "city", "uf")
     @classmethod
     def field_must_not_be_null(cls, value: str | None) -> str:
         if value is None:
