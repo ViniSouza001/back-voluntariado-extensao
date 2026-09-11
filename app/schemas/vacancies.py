@@ -2,6 +2,8 @@ from datetime import datetime, timezone, timedelta, UTC
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, field_serializer
 
+from app.models.vacancies import VacancyModality
+
 BR_TZ = timezone(timedelta(hours=-3))
 UTC_TZ = timezone(timedelta(hours=+3))
 
@@ -14,8 +16,8 @@ class ResponseVacancies(BaseModel):
     starts_at: datetime
     ends_at: datetime
     branch: str
-    city: str
-    uf: str
+    city: str | None
+    uf: str | None
     model_config = ConfigDict(from_attributes=True)
 
     @field_serializer("posted_at", "starts_at", "ends_at", when_used="json")
@@ -30,13 +32,15 @@ class CreateVacancies(BaseModel):
     
     title: str = Field(min_length=3, max_length=100)
     description: str = Field(min_length=1, max_length=255)
-    location: str = Field(min_length=1, max_length=255)
+    address: str = Field(min_length=1, max_length=255)
     id_entity: int
     starts_at: datetime
     ends_at: datetime
     branch: str = Field(min_length=1, max_length=50)
-    city: str = Field(min_length=1, max_length=100)
-    uf: str = Field(min_length=1, max_length=2)
+
+    modality: VacancyModality
+    city: str | None = Field(min_length=1, max_length=100)
+    uf: str | None = Field(min_length=1, max_length=2)
 
     @field_validator("title", "description", "location", "branch", "city", "uf")
     @classmethod
@@ -67,7 +71,7 @@ class UpdateVacancies(BaseModel):
     
     title: str = Field(min_length=3, max_length=100)
     description: str = Field(min_length=1, max_length=255)
-    location: str = Field(min_length=1, max_length=255)
+    address: str = Field(min_length=1, max_length=255)
     branch: str = Field(min_length=1, max_length=50)
     city: str = Field(min_length=1, max_length=100)
     uf: str = Field(min_length=1, max_length=2)

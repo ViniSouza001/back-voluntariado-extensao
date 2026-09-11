@@ -21,7 +21,7 @@ class VacancieService:
             title = data.title.strip(),
             description = data.description.lower(),
             id_entity = int(data.id_entity),
-            location = data.location.lower(),
+            address = data.address.lower(),
             branch = data.branch.lower().strip(),
             city = data.city.lower().strip(),
             uf = data.uf.upper(),
