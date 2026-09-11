@@ -18,6 +18,7 @@ class EmailService:
             )
             return False
         url_base = self.configurations.url_frontend.rstrip("/")
+        print(url_base)
         if url_base:
             url_confirmation = f"{url_base}/confirmacao?token={token}"
         else:

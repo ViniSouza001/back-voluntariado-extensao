@@ -8,7 +8,7 @@ from sqlalchemy.orm import Session
 from app.core.config import get_configurations
 from app.db.session import get_session
 from app.models.user import User
-from app.repositories.user import RepositoryUser
+from app.repositories.users import RepositoryUser
 
 configurations = get_configurations()
 scheme_oauth2 = OAuth2PasswordBearer(

@@ -20,7 +20,7 @@ from app.core.security import (
 from app.models.email_confirmation import EmailConfirmation
 from app.models.user import User
 from app.repositories.email_confirmations import RepositoryEmailConfirmation
-from app.repositories.user import RepositoryUser
+from app.repositories.users import RepositoryUser
 from app.schemas.authentication import UserRegistration
 from app.services.email import EmailService
 from app.utils.cpf import valid_cpf, normalize_cpf

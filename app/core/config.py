@@ -113,6 +113,7 @@ class Configurations:
         )
     port_email: int = field(default_factory=lambda: int(os.getenv("PORT_EMAIL", "587")))
     url_frontend: str = field(default_factory=lambda: os.getenv("URL_FRONTEND", ""))
+    frontend_working: bool = field(default_factory=lambda: _as_boolean(os.getenv("FRONTEND_WORKING")))
 
     def validate(self) -> None:
         if not self.secret_key:

@@ -13,3 +13,7 @@ class RepositoryEntity:
     def add(session: Session, entity: Entity) -> Entity:
         session.add(entity)
         return entity
+
+    @staticmethod
+    def search_for_id(session: Session, id_entity: int) -> Entity | None:
+        return session.scalar(select(Entity).where(Entity.id == id_entity))

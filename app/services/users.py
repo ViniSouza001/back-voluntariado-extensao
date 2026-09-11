@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from app.core.exceptions import AuthenticationError, ValidationError
 from app.core.security import generate_hash_password, verify_password
 from app.models.user import User
-from app.repositories.user import RepositoryUser
+from app.repositories.users import RepositoryUser
 from app.schemas.user import UpdatePassword, UpdateUser
 
 
