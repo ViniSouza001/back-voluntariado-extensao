@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 
 from app.core.exceptions import ValidationError
-from app.models.vacancies import Vacancies
+from app.models.vacancies import Vacancies, VacancyModality
 from app.schemas.vacancies import CreateVacancies, UpdateVacancies
 from app.repositories.vacancies import RepositoryVacancy
 from app.repositories.entities import RepositoryEntity
@@ -21,13 +21,19 @@ class VacancieService:
             title = data.title.strip(),
             description = data.description.lower(),
             id_entity = int(data.id_entity),
-            address = data.address.lower(),
             branch = data.branch.lower().strip(),
-            city = data.city.lower().strip(),
-            uf = data.uf.upper(),
             starts_at = data.starts_at,
-            ends_at = data.ends_at
+            ends_at = data.ends_at,
+
+            modality = data.modality
         )
+
+        if data.modality == VacancyModality.IN_PERSON:
+            vacancy.city = data.city.lower().strip()
+            vacancy.uf = data.uf.upper()
+            vacancy.cep = data.cep
+            vacancy.thoroughfare = data.thoroughfare.strip()
+            vacancy.details = data.details.strip()
 
         try:
             RepositoryVacancy.create(self.session, vacancy)
@@ -44,14 +50,22 @@ class VacancieService:
         return vacancy
         
 
-    def update(self, vacancie: Vacancies, data: UpdateVacancies) -> Vacancies:
-        updates = data.model_dump(exclude_unset=True)
+    def update(self, id_vacancy: int, data: UpdateVacancies) -> Vacancies:
+        vacancie = RepositoryVacancy.search(self.session, id = id_vacancy, city = None, uf = None, branch = None, id_entity = None, title = None, modality = None)
+
+        vacancie = vacancie[0] if vacancie else None
+
+        if not vacancie:
+            raise ValidationError("Vaga não encontrada")
+        
+        updates = data.model_dump(exclude_unset=True, exclude_none=True)
         for data_name, value in updates.items():
-            setattr(vacancie, data_name, value)
+            # setattr(vacancie, data_name, value)
+            setattr(vacancie, data_name, value.strip() if isinstance(value, str) else value)
+            
         self.session.commit()
         self.session.refresh(vacancie)
         return vacancie
-    
 
     def delete(self, id_vacancy: int) -> None:
         vacancie = RepositoryVacancy.search_for_id(self.session, id_vacancy)
@@ -60,24 +74,25 @@ class VacancieService:
         self.session.delete(vacancie)
         self.session.commit()
 
-    def list(self, city: str | None, uf: str | None, branch: str | None, id_entity: int | None, title: str | None) -> list[Vacancies]:
-        if city or uf:
-            available_vacancies = RepositoryVacancy.search_for_location(self.session, city, uf)
-        elif branch:
-            available_vacancies = RepositoryVacancy.search_for_branch(self.session, branch)
-        elif id_entity:
-            available_vacancies = RepositoryVacancy.search_for_entity(self.session, id_entity)
-        elif title:
-            available_vacancies = RepositoryVacancy.search_for_title(self.session, title)
-        else:
-            available_vacancies = RepositoryVacancy.list(self.session)
-            
-        return available_vacancies
+    def list(
+            self,
+            id: int | None,
+            city: str | None,
+            uf: str | None,
+            branch: str | None,
+            id_entity: int | None,
+            title: str | None,
+            modality: VacancyModality | None
 
+            ) -> list[Vacancies]:
 
-        ## combinações de pesquisa
-        # segundo Gemini, posso fazer uma combinação de listagem (por exemplo pesquisar por local e área de atuação)
-        # e fazer um método no repositório que vá concatenando os filtros na mesma query
-
-    
-    
+        return RepositoryVacancy.search(
+            self.session,
+            id = id,
+            city = city,
+            uf = uf,
+            branch = branch,
+            id_entity = id_entity,
+            title = title,
+            modality = modality
+        )

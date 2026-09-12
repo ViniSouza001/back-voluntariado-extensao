@@ -17,7 +17,14 @@ class ResponseUser(BaseModel):
 
 
 class UpdateUser(BaseModel):
-    model_config = ConfigDict(str_strip_whitespace=True)
+    model_config = ConfigDict(
+        str_strip_whitespace=True,
+        json_schema_extra={
+            "example": {
+                "name": "Novo nome",
+            }
+        },
+    )
 
     name: str | None = Field(default=None, min_length=3, max_length=100)
     birth_date: date | None = None

@@ -12,9 +12,14 @@ class UserService:
         self.session = session
 
     def update(self, user: User, data: UpdateUser) -> User:
-        updates = data.model_dump(exclude_unset=True)
+        # PATCH deve alterar somente os campos enviados pelo cliente. Como os
+        # campos da tabela users são obrigatórios, null também não deve apagar
+        # o valor já persistido.
+        updates = data.model_dump(exclude_unset=True, exclude_none=True)
+
         if "uf" in updates and updates["uf"] is not None:
             updates["uf"] = updates["uf"].upper()
+
         for data_name, value in updates.items():
             setattr(user, data_name, value.strip() if isinstance(value, str) else value)
         self.session.commit()

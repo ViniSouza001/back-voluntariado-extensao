@@ -2,14 +2,10 @@ from sqlalchemy.ext.asyncio import session
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.models.vacancies import Vacancies
+from app.models.vacancies import Vacancies, VacancyModality
 
 
 class RepositoryVacancy:
-    
-    @staticmethod
-    def list(session: Session) -> list[Vacancies]:
-        return session.scalars(select(Vacancies).order_by(Vacancies.id.desc())).all()
     
     @staticmethod
     def create(session: Session, vacancie: Vacancies) -> Vacancies:
@@ -27,30 +23,34 @@ class RepositoryVacancy:
         return vacancie
 
     @staticmethod
-    def search_for_id(session: Session, id_vacancy: int) -> Vacancies | None:
-        return session.scalar(select(Vacancies).where(Vacancies.id == id_vacancy))
-    
+    def search(
+        session: Session,
+        id: int | None,
+        city: str | None,
+        uf: str | None,
+        branch: str | None,
+        id_entity: int | None,
+        title: str | None,
+        modality: VacancyModality | None
+    ) -> list[Vacancies]:
 
-    @staticmethod
-    def search_for_title(session: Session, title: str) -> list[Vacancies]:
-        return session.scalars(select(Vacancies).where(Vacancies.title.like(f"%{title}%"))).all()
-
-    @staticmethod
-    def search_for_entity(session: Session, id_entity: int) -> list[Vacancies]:
-        return session.scalars(select(Vacancies).where(Vacancies.id_entity == id_entity)).all()
-
-    @staticmethod
-    def search_for_location(session: Session, city: str | None, uf: str | None) -> list[Vacancies]:
         query = select(Vacancies)
 
-        if uf:
-            query = query.where(Vacancies.uf == uf.upper().strip())
+        if id:
+            query = query.where(Vacancies.id == id)
+            return session.scalars(query).all()
+
         if city:
-            query = query.where(Vacancies.city.ilike(f"%{city.strip()}%"))
+            query = query.where(Vacancies.city == city.lower().strip())
+        if uf:
+            query = query.where(Vacancies.uf == uf.upper())
+        if branch:
+            query = query.where(Vacancies.branch == branch.lower().strip())
+        if id_entity:
+            query = query.where(Vacancies.id_entity == id_entity)
+        if title:
+            query = query.where(Vacancies.title.ilike(f"%{title.lower().strip()}%"))
+        if modality:
+            query = query.where(Vacancies.modality == modality)
 
-        return session.scalars(query.order_by(Vacancies.id.desc())).all()
-
-    @staticmethod
-    def search_for_branch(session: Session, branch: str) -> list[Vacancies]:
-        return session.scalars(select(Vacancies).where(Vacancies.branch == branch.strip())).all()
-    
+        return session.scalars(query).all()

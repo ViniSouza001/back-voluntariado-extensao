@@ -1,7 +1,8 @@
 from fastapi import APIRouter, status
 
 from app.api.dependencies import BaseSession
-from app.schemas.vacancies import CreateVacancies, ResponseVacancies, UpdateVacancies, DeleteVacancies, ListVacancies
+from app.models.vacancies import VacancyModality
+from app.schemas.vacancies import CreateVacancies, ResponseVacancies, UpdateVacancies, ListVacancies
 from app.services.vacancies import VacancieService
 
 router = APIRouter(prefix="/vacancies", tags=["vacancies"])
@@ -11,8 +12,29 @@ def create_vacancy(data: CreateVacancies, session: BaseSession):
     return VacancieService(session).create(data)
 
 @router.get("/", response_model=list[ListVacancies])
-def list_vacancies(session: BaseSession, city: str | None = None, uf: str | None = None, branch: str | None = None, id_entity: int | None = None, title: str | None = None):
-    return VacancieService(session).list(city, uf, branch, id_entity, title)
+def list_vacancies(
+    session: BaseSession,
+    id: int | None = None,
+    city: str | None = None,
+    uf: str | None = None,
+    branch: str | None = None,
+    id_entity: int | None = None,
+    title: str | None = None,
+    modality: VacancyModality | None = None
+    ):
+    return VacancieService(session).list(
+        id=id,
+        city=city,
+        uf=uf,
+        branch=branch,
+        id_entity=id_entity,
+        title=title,
+        modality=modality
+    )
+
+@router.patch("/{id_vacancy}", response_model=ResponseVacancies)
+def update_vacancy(id_vacancy: int, data: UpdateVacancies, session: BaseSession):
+    return VacancieService(session).update(id_vacancy, data)
 
 @router.delete("/{id_vacancy}")
 def delete_vacancy(id_vacancy: int, session: BaseSession):

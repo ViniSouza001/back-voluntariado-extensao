@@ -13,7 +13,6 @@ def utc_now() -> datetime:
 class VacancyModality(StrEnum):
     REMOTE = "remote"
     IN_PERSON = "in_person"
-    HYBRID = "hybrid"
 
 
 class Vacancies(Base):
@@ -23,12 +22,17 @@ class Vacancies(Base):
     title: Mapped[str] = mapped_column(String(100), nullable=False)
     description: Mapped[str] = mapped_column(String(255), nullable=True)
     id_entity: Mapped[int] = mapped_column(ForeignKey("entities.id"), nullable=False)
-    address: Mapped[str] = mapped_column(String(255), nullable=True)
     posted_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, default=utc_now)
     starts_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
     ends_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
     branch: Mapped[str] = mapped_column(String(50), nullable=False)
 
     modality: Mapped[VacancyModality]
+
+    cep: Mapped[str | None] = mapped_column(String(8), nullable=True)
+    number: Mapped[str | None] = mapped_column(String(50), nullable=True)
+    thoroughfare: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    details: Mapped[str | None] = mapped_column(String(100), nullable=True)
+    
     city: Mapped[str | None] = mapped_column(String(100), nullable=True)
     uf: Mapped[str | None] = mapped_column(String(2), nullable=True)
