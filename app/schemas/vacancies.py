@@ -5,7 +5,6 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator, field_serial
 from app.models.vacancies import VacancyModality, VacancyBranch
 
 BR_TZ = timezone(timedelta(hours=-3))
-UTC_TZ = timezone(timedelta(hours=+3))
 
 class ResponseVacancies(BaseModel):
     id: int
@@ -67,15 +66,16 @@ class CreateVacancies(BaseModel):
         if value is None:
             raise ValueError("A data não pode ser nula")
             
-        # Se o usuário enviar sem timezone explícito, assume horário de Brasília (UTC-3)
+        # Datas sem fuso são interpretadas como horário de Brasília.
         if value.tzinfo is None:
-            value = value.replace(tzinfo=timezone.utc)
-        now = datetime.now(timezone.utc)
+            value = value.replace(tzinfo=BR_TZ)
+        now = datetime.now(UTC)
         
         if value <= now:
             raise ValueError("A data deve estar no futuro")
            
-        return value.astimezone(UTC_TZ)
+        # O SQLite não preserva o fuso: gravamos sempre a hora UTC sem tzinfo.
+        return value.astimezone(UTC).replace(tzinfo=None)
 
     @model_validator(mode="after")
     def validate_location(self):

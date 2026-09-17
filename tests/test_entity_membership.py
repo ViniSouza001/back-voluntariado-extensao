@@ -10,7 +10,7 @@ from app.db.base import Base
 from app.models.entity import Entity
 from app.models.member_entity import MemberEntity, MemberPosition
 from app.models.user import User
-from app.models.vacancies import Vacancies, VacancyModality
+from app.models.vacancies import Vacancies, VacancyBranch, VacancyModality
 from app.schemas.vacancies import CreateVacancies, UpdateVacancies
 from app.services.entity_membership import get_entity_position, require_entity_position
 from app.services.vacancies import VacancieService
@@ -56,7 +56,7 @@ class EntityMembershipTests(unittest.TestCase):
         return CreateVacancies(
             title="Apoio comunitário", description="Atividade voluntária",
             id_entity=entity_id, starts_at=starts_at,
-            ends_at=starts_at + timedelta(hours=2), branch="Educação",
+            ends_at=starts_at + timedelta(hours=2), branch=VacancyBranch.EDUCATION,
             modality=modality,
             **({"thoroughfare": "Rua A", "city": "São Paulo", "uf": "SP",
                 "number": "42"} if modality == VacancyModality.IN_PERSON else {}),

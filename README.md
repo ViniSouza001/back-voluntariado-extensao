@@ -94,9 +94,62 @@ python -c "import secrets; print(secrets.token_urlsafe(32))"
     Criar e atualizar o banco de dados
 </p>
 
+<p>
+    Na primeira instalação, o comando abaixo cria as tabelas. Se você já tem um banco local, ele aplica somente as migrações que ainda faltam, sem precisar recriar o banco.
+</p>
+
 ```shell
 python -m alembic upgrade head
 ```
+
+<h1>Atualizar um banco que já existe</h1>
+
+<p>
+    <img src="./assets/gif/notch.webp" width=70 align="middle">
+    Antes de atualizar, confira a variável <code>URL_DATABASE</code> no seu <code>.env</code>. O Alembic vai alterar exatamente esse banco. O <code>.env.example</code> aponta para <code>data/banco.db</code>; se você já usava outro nome ou caminho, mantenha o caminho do seu banco atual para não criar um banco novo por engano.
+</p>
+
+<p>
+    <img src="./assets/gif/warden_sniffing.webp" width=50 align="middle">
+    Se o banco SQLite já contém dados, faça uma cópia do arquivo indicado em <code>URL_DATABASE</code> antes de executar a atualização.
+</p>
+
+<p>
+    <img src="./assets/gif/notch.webp" width=70 align="middle">
+    Dentro da pasta do backend, com as dependências instaladas e o <code>.env</code> configurado, verifique a versão atual, aplique as migrações e confira novamente:
+</p>
+
+```shell
+python -m alembic current
+python -m alembic upgrade head
+python -m alembic current
+```
+
+<p>
+    A migração mais recente deste projeto é <code>d7c81a4e69b2</code>.
+</p>
+
+<h1>O que mudou no banco e na API</h1>
+
+<p>
+    <img src="./assets/gif/ghast.gif" width=50 align="middle">
+    Agora existe a tabela <code>vacancies</code> para as vagas voluntárias. As vagas têm modalidade <code>remote</code> ou <code>in_person</code>. Para vagas presenciais, a API exige logradouro, cidade e UF; CEP, número e complemento são opcionais. Ao atualizar um banco que já tinha vagas, a migração marca como remotas as vagas antigas sem modalidade e remove a antiga coluna <code>location</code>. Confira esses dados antes de atualizar se você já cadastrou vagas.
+</p>
+
+<p>
+    <img src="./assets/gif/villager.gif" width=40 align="middle">
+    Um usuário pode pertencer a somente uma entidade. A pessoa que cria a entidade vira <code>admin</code>; os papéis possíveis são <code>admin</code>, <code>editor</code> e <code>member</code>. Administradores e editores podem criar, editar e excluir vagas da própria entidade. Somente um administrador pode alterar o papel de outro membro, e a entidade precisa manter pelo menos um administrador.
+</p>
+
+<p>
+    <img src="./assets/gif/zumbizinho.gif" width=70 align="middle">
+    Se a migração parar com a mensagem de que há usuários ligados a mais de uma entidade, resolva esses vínculos no banco antes de executar <code>python -m alembic upgrade head</code> novamente. A atualização não escolhe automaticamente qual entidade manter.
+</p>
+
+<p>
+    <img src="./assets/gif/steve_dancing.webp" width=60 align="middle">
+    Nas vagas, datas e horas recebidas sem fuso são interpretadas como horário de Brasília. O backend guarda o instante em UTC no banco, sem informação de fuso na coluna, e devolve as datas em horário de Brasília nas respostas da API.
+</p>
 
 <p>
     <img src="./assets/gif/villager.gif" width=40 align="middle">

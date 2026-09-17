@@ -8,7 +8,7 @@ from enum import StrEnum
 from app.db.base import Base
 
 def utc_now() -> datetime:
-    return datetime.now(UTC)
+    return datetime.now(UTC).replace(tzinfo=None)
 
 class VacancyModality(StrEnum):
     REMOTE = "remote"
@@ -38,9 +38,10 @@ class Vacancies(Base):
     title: Mapped[str] = mapped_column(String(100), nullable=False)
     description: Mapped[str] = mapped_column(String(255), nullable=True)
     id_entity: Mapped[int] = mapped_column(ForeignKey("entities.id"), nullable=False)
-    posted_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, default=utc_now)
-    starts_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
-    ends_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
+    # Datas guardadas em UTC, sem informação de fuso na coluna.
+    posted_at: Mapped[datetime] = mapped_column(DateTime(timezone=False), nullable=False, default=utc_now)
+    starts_at: Mapped[datetime] = mapped_column(DateTime(timezone=False), nullable=False)
+    ends_at: Mapped[datetime] = mapped_column(DateTime(timezone=False), nullable=False)
     branch: Mapped[VacancyBranch]
 
     modality: Mapped[VacancyModality]
