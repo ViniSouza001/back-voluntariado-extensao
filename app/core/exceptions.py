@@ -16,3 +16,6 @@ class ConflictError(ApplicationError):
 
 class ValidationError(ApplicationError):
     status_code = 422
+
+class ForbiddenError(ApplicationError):
+    status_code = 403

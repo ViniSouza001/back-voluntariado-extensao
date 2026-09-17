@@ -8,6 +8,10 @@ from app.models.vacancies import Vacancies, VacancyModality
 class RepositoryVacancy:
     
     @staticmethod
+    def search_for_id(session: Session, id_vacancy: int) -> Vacancies | None:
+        return session.get(Vacancies, id_vacancy)
+
+    @staticmethod
     def create(session: Session, vacancie: Vacancies) -> Vacancies:
         session.add(vacancie)
         return vacancie

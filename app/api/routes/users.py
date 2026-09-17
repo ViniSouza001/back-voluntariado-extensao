@@ -5,7 +5,7 @@ from app.schemas.commom import ResponseMessage
 from app.schemas.user import UpdatePassword, UpdateUser, ResponseUser, DeleteUser
 from app.services.users import UserService
 
-router = APIRouter(prefix="/users", tags=["users"])
+router = APIRouter(prefix="/user", tags=["users"])
 
 
 @router.get("/me", response_model=ResponseUser)

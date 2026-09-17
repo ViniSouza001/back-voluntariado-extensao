@@ -14,6 +14,22 @@ class VacancyModality(StrEnum):
     REMOTE = "remote"
     IN_PERSON = "in_person"
 
+class VacancyBranch(StrEnum):
+    ANIMALS = "animals"
+    ENVIRONMENT = "environment"
+    EDUCATION = "education"
+    HEALTH = "health"
+    SOCIAL_ASSISTANCE = "social_assistance"
+    ELDERLY = "elderly"
+    CHILDREN_AND_TEENS = "children_and_teens"
+    INCLUSION = "inclusion"
+    CULTURE_AND_ART = "culture_and_art"
+    SPORTS = "sports"
+    TECHNOLOGY = "technology"
+    HUMANITARIAN_AID = "humanitarian_aid"
+    COMMUNITY = "community"
+    EVENTS = "events"
+
 
 class Vacancies(Base):
     __tablename__ = "vacancies"
@@ -25,7 +41,7 @@ class Vacancies(Base):
     posted_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, default=utc_now)
     starts_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
     ends_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False)
-    branch: Mapped[str] = mapped_column(String(50), nullable=False)
+    branch: Mapped[VacancyBranch]
 
     modality: Mapped[VacancyModality]
 

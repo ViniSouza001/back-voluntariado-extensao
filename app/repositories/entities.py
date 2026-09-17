@@ -6,7 +6,7 @@ from app.models.entity import Entity
 
 class RepositoryEntity:
     @staticmethod
-    def search_for_username(session: Session, slug: str) -> Entity | None:
+    def search_for_slug(session: Session, slug: str) -> Entity | None:
         return session.scalar(select(Entity).where(Entity.slug == slug.lower()))
 
     @staticmethod

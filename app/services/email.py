@@ -1,10 +1,13 @@
 import logging
+from pathlib import Path
 
 from fastapi_mail import ConnectionConfig, FastMail, MessageSchema
+from jinja2 import Environment, FileSystemLoader
 
 from app.core.config import Configurations, get_configurations
 
 register = logging.getLogger(__name__)
+TEMPLATES_DIRECTORY = Path(__file__).resolve().parents[1] / "templates"
 
 
 class EmailService:
@@ -18,7 +21,6 @@ class EmailService:
             )
             return False
         url_base = self.configurations.url_frontend.rstrip("/")
-        print(url_base)
         if url_base:
             url_confirmation = f"{url_base}/confirmacao?token={token}"
         else:
@@ -40,8 +42,10 @@ class EmailService:
         message = MessageSchema(
             subject="Confirme sua conta",
             recipients=[recipient],
-            body=(f"Use o link abaixo para confirmar sua conta:\n\n{url_confirmation}\n"),
-            subtype="plain",
+            body=Environment(loader=FileSystemLoader(TEMPLATES_DIRECTORY)).get_template(
+                "confirm-login.html"
+            ).render(url_confirmation=url_confirmation),
+            subtype="html",
         )
 
         try:

@@ -15,6 +15,7 @@ class MemberEntity(Base):
     __tablename__ = "members_entities"
     __table_args__ = (
         Index("uq_member_user_entity", "id_user", "id_entity", unique=True),
+        Index("uq_member_one_entity_per_user", "id_user", unique=True),
     )
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)

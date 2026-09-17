@@ -3,25 +3,35 @@ from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 
 from app.core.exceptions import ValidationError
-from app.models.vacancies import Vacancies, VacancyModality
+from app.models.member_entity import MemberPosition
+from app.models.vacancies import Vacancies, VacancyModality, VacancyBranch
+from app.models.user import User
 from app.schemas.vacancies import CreateVacancies, UpdateVacancies
 from app.repositories.vacancies import RepositoryVacancy
 from app.repositories.entities import RepositoryEntity
+from app.services.entity_membership import require_entity_position
 
 
 class VacancieService:
     def __init__(self, session: Session):
         self.session = session
 
-    def create(self, data: CreateVacancies) -> Vacancies:
-        if not RepositoryEntity.search_for_id(self.session, data.id_entity):
+    def create(self, data: CreateVacancies, user: User) -> Vacancies:
+        # identificar entidade
+        entity = RepositoryEntity.search_for_id(self.session, data.id_entity)
+        if not entity:
             raise ValidationError("Entidade não encontrada")
-            
+
+        require_entity_position(
+            self.session, user.id, entity.id,
+            {MemberPosition.ADMIN, MemberPosition.EDITOR},
+        )
+
         vacancy = Vacancies(
             title = data.title.strip(),
             description = data.description.lower(),
             id_entity = int(data.id_entity),
-            branch = data.branch.lower().strip(),
+            branch = data.branch,
             starts_at = data.starts_at,
             ends_at = data.ends_at,
 
@@ -32,15 +42,16 @@ class VacancieService:
             vacancy.city = data.city.lower().strip()
             vacancy.uf = data.uf.upper()
             vacancy.cep = data.cep
+            vacancy.number = data.number
             vacancy.thoroughfare = data.thoroughfare.strip()
-            vacancy.details = data.details.strip()
+            vacancy.details = data.details.strip() if data.details else None
 
         try:
             RepositoryVacancy.create(self.session, vacancy)
             self.session.flush()
             self.session.commit()
             self.session.refresh(vacancy)
-        except IntegrityError as error:
+        except IntegrityError:
             self.session.rollback()
             raise ConflictError("Não foi possível criar a vaga")
         except Exception:
@@ -50,27 +61,34 @@ class VacancieService:
         return vacancy
         
 
-    def update(self, id_vacancy: int, data: UpdateVacancies) -> Vacancies:
-        vacancie = RepositoryVacancy.search(self.session, id = id_vacancy, city = None, uf = None, branch = None, id_entity = None, title = None, modality = None)
-
-        vacancie = vacancie[0] if vacancie else None
-
+    def update(self, id_vacancy: int, data: UpdateVacancies, user: User) -> Vacancies:
+        vacancie = RepositoryVacancy.search_for_id(self.session, id_vacancy)
         if not vacancie:
             raise ValidationError("Vaga não encontrada")
+
+        require_entity_position(
+            self.session, user.id, vacancie.id_entity,
+            {MemberPosition.ADMIN, MemberPosition.EDITOR},
+        )
         
         updates = data.model_dump(exclude_unset=True, exclude_none=True)
         for data_name, value in updates.items():
-            # setattr(vacancie, data_name, value)
             setattr(vacancie, data_name, value.strip() if isinstance(value, str) else value)
             
         self.session.commit()
         self.session.refresh(vacancie)
         return vacancie
 
-    def delete(self, id_vacancy: int) -> None:
+    def delete(self, id_vacancy: int, user: User) -> None:
         vacancie = RepositoryVacancy.search_for_id(self.session, id_vacancy)
         if not vacancie:
             raise ValidationError("Vaga não encontrada")
+
+        require_entity_position(
+            self.session, user.id, vacancie.id_entity,
+            {MemberPosition.ADMIN, MemberPosition.EDITOR},
+        )
+
         self.session.delete(vacancie)
         self.session.commit()
 

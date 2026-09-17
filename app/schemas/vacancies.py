@@ -2,7 +2,7 @@ from datetime import datetime, timezone, timedelta, UTC
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, field_serializer, model_validator
 
-from app.models.vacancies import VacancyModality
+from app.models.vacancies import VacancyModality, VacancyBranch
 
 BR_TZ = timezone(timedelta(hours=-3))
 UTC_TZ = timezone(timedelta(hours=+3))
@@ -14,7 +14,7 @@ class ResponseVacancies(BaseModel):
     posted_at: datetime
     starts_at: datetime
     ends_at: datetime
-    branch: str
+    branch: VacancyBranch
 
     modality: VacancyModality
 
@@ -42,7 +42,7 @@ class CreateVacancies(BaseModel):
     id_entity: int
     starts_at: datetime
     ends_at: datetime
-    branch: str = Field(min_length=1, max_length=50)
+    branch: VacancyBranch
 
     modality: VacancyModality
 
@@ -97,7 +97,7 @@ class UpdateVacancies(BaseModel):
     
     title: str | None = Field(default=None, min_length=3, max_length=100)
     description: str | None = Field(default=None, min_length=1, max_length=255)
-    branch: str | None = Field(default=None, min_length=1, max_length=50)
+    branch: VacancyBranch | None = None
 
     modality: VacancyModality | None = None
 
@@ -130,7 +130,7 @@ class ListVacancies(BaseModel):
     posted_at: datetime
     starts_at: datetime
     ends_at: datetime
-    branch: str
+    branch: VacancyBranch
 
     modality: VacancyModality
 
