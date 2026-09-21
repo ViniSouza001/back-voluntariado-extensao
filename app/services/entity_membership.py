@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 
 from app.core.exceptions import ForbiddenError
 from app.models.member_entity import MemberPosition
-from app.repositories.member_entity import RepositoryMemberEntity
+from app.repositories.member_entities import RepositoryMemberEntity
 
 
 def get_entity_position(session: Session, id_user: int, id_entity: int) -> MemberPosition:

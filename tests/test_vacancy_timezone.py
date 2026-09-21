@@ -8,8 +8,8 @@ from sqlalchemy.orm import Session
 import app.models  # noqa: F401 - register all tables with SQLAlchemy
 from app.db.base import Base
 from app.models.entity import Entity
-from app.models.vacancies import Vacancies, VacancyBranch, VacancyModality
-from app.schemas.vacancies import BR_TZ, CreateVacancies, ListVacancies, ResponseVacancies
+from app.models.vacancy import Vacancies, VacancyBranch, VacancyModality
+from app.schemas.vacancy import BR_TZ, CreateVacancies, ListVacancies, ResponseVacancies
 
 
 class VacancyTimezoneTests(unittest.TestCase):

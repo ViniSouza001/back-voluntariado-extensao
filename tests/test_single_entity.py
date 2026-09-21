@@ -14,6 +14,7 @@ from app.db.session import get_session
 from app.main import app
 from app.models.entity import Entity
 from app.models.member_entity import MemberEntity, MemberPosition
+from app.models.notification import Notification, NotificationType
 from app.models.user import User
 
 
@@ -58,6 +59,13 @@ class SingleEntityTests(unittest.TestCase):
         self.assertEqual(membership.status_code, 200)
         self.assertEqual(membership.json()["entity"]["id"], entity_id)
         self.assertEqual(membership.json()["position"], "admin")
+
+        notification = self.session.query(Notification).filter_by(
+            recipient_id=self.user.id,
+            notification_type=NotificationType.ENTITY_MEMBER_JOINED,
+        ).first()
+        self.assertIsNotNone(notification)
+        self.assertEqual(notification.entity_id, entity_id)
         second = self.client.post("/api/v1/entities", json=self.entity_data("second"))
         self.assertEqual(second.status_code, 409)
         self.assertIsNone(self.session.query(Entity).filter_by(slug="second").first())

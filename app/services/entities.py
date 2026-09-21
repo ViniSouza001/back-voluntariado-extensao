@@ -6,8 +6,9 @@ from app.models.entity import Entity
 from app.models.member_entity import MemberEntity, MemberPosition
 from app.models.user import User
 from app.repositories.entities import RepositoryEntity
-from app.repositories.member_entity import RepositoryMemberEntity
+from app.repositories.member_entities import RepositoryMemberEntity
 from app.schemas.entity import EntityCreation
+from app.services.notifications import NotificationService
 
 
 class EntityService:
@@ -43,6 +44,11 @@ class EntityService:
                     id_entity=entity.id,
                     position=MemberPosition.ADMIN,
                 )
+            )
+            NotificationService(self.session).notify_entity_joined(
+                creater.id,
+                creater.id,
+                entity,
             )
             self.session.commit()
             self.session.refresh(entity)

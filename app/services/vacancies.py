@@ -4,12 +4,14 @@ from sqlalchemy.exc import IntegrityError
 
 from app.core.exceptions import ValidationError
 from app.models.member_entity import MemberPosition
-from app.models.vacancies import Vacancies, VacancyModality, VacancyBranch
+from app.models.vacancy import Vacancies, VacancyModality, VacancyBranch
 from app.models.user import User
-from app.schemas.vacancies import CreateVacancies, UpdateVacancies
+from app.schemas.vacancy import CreateVacancies, UpdateVacancies
 from app.repositories.vacancies import RepositoryVacancy
 from app.repositories.entities import RepositoryEntity
 from app.services.entity_membership import require_entity_position
+from app.repositories.vacancy_participants import RepositoryVacancyParticipant
+from app.services.notifications import NotificationService
 
 
 class VacancieService:
@@ -49,6 +51,10 @@ class VacancieService:
         try:
             RepositoryVacancy.create(self.session, vacancy)
             self.session.flush()
+            NotificationService(self.session).notify_vacancy_created(
+                user.id,
+                vacancy,
+            )
             self.session.commit()
             self.session.refresh(vacancy)
         except IntegrityError:
@@ -72,9 +78,25 @@ class VacancieService:
         )
         
         updates = data.model_dump(exclude_unset=True, exclude_none=True)
+        vacancy_changed = any(
+            getattr(vacancie, data_name) != value
+            for data_name, value in updates.items()
+        )
         for data_name, value in updates.items():
             setattr(vacancie, data_name, value.strip() if isinstance(value, str) else value)
-            
+
+        if vacancy_changed:
+            participants = RepositoryVacancyParticipant.list_from_vacancy(
+                self.session, vacancie.id
+            )
+            notification_service = NotificationService(self.session)
+            for participant in participants:
+                notification_service.notify_vacancy_updated(
+                    participant.id_user,
+                    user.id,
+                    vacancie,
+                )
+
         self.session.commit()
         self.session.refresh(vacancie)
         return vacancie
@@ -88,6 +110,17 @@ class VacancieService:
             self.session, user.id, vacancie.id_entity,
             {MemberPosition.ADMIN, MemberPosition.EDITOR},
         )
+
+        participants = RepositoryVacancyParticipant.list_from_vacancy(
+            self.session, vacancie.id
+        )
+        notification_service = NotificationService(self.session)
+        for participant in participants:
+            notification_service.notify_vacancy_deleted(
+                participant.id_user,
+                user.id,
+                vacancie.title,
+            )
 
         self.session.delete(vacancie)
         self.session.commit()

@@ -1,9 +1,12 @@
 from sqlalchemy.orm import Session
 
-from app.core.exceptions import AuthenticationError, ValidationError
+from sqlalchemy.exc import IntegrityError
+
+from app.core.exceptions import AuthenticationError, ConflictError, ValidationError
 from app.core.security import generate_hash_password, verify_password
 from app.models.user import User
 from app.repositories.users import RepositoryUser
+from app.repositories.invitations import RepositoryInvitation
 from app.schemas.user import UpdatePassword, UpdateUser
 
 
@@ -43,7 +46,18 @@ class UserService:
 
     def delete(self, id_user: int) -> None:
         user = RepositoryUser.search_for_id(self.session, id_user)
-        if not user:
+        if user is None:
             raise ValidationError("Usuário não encontrado")
-        self.session.delete(user)
-        self.session.commit()
+
+        try:
+            # Convites possuem duas chaves estrangeiras para users. Eles precisam
+            # ser removidos antes da conta para não violar a integridade do banco.
+            RepositoryInvitation.delete_from_user(self.session, user.id)
+            self.session.delete(user)
+            self.session.commit()
+        except IntegrityError as error:
+            self.session.rollback()
+            raise ConflictError("Não foi possível excluir o usuário") from error
+        except Exception:
+            self.session.rollback()
+            raise

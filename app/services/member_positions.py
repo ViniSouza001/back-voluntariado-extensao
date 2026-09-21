@@ -3,9 +3,11 @@ from sqlalchemy.orm import Session
 from app.core.exceptions import ConflictError, NotFoundError
 from app.models.member_entity import MemberEntity, MemberPosition
 from app.models.user import User
-from app.repositories.member_entity import RepositoryMemberEntity
+from app.repositories.member_entities import RepositoryMemberEntity
 from app.repositories.member_positions import count_entity_admins
+from app.repositories.entities import RepositoryEntity
 from app.services.entity_membership import require_entity_position
+from app.services.notifications import NotificationService
 
 
 def change_member_position(
@@ -23,6 +25,10 @@ def change_member_position(
     if membership is None:
         raise NotFoundError("Membro não encontrado nesta entidade")
 
+    entity = RepositoryEntity.search_for_id(session, id_entity)
+    if entity is None:
+        raise NotFoundError("Entidade não encontrada")
+
     if (
         membership.position == MemberPosition.ADMIN
         and new_position != MemberPosition.ADMIN
@@ -30,7 +36,18 @@ def change_member_position(
     ):
         raise ConflictError("A entidade precisa ter pelo menos um administrador")
 
+    old_position = membership.position
     membership.position = new_position
+
+    if old_position != new_position:
+        NotificationService(session).notify_entity_role_changed(
+            id_user,
+            actor.id,
+            entity,
+            old_position,
+            new_position,
+        )
+
     session.commit()
     session.refresh(membership)
     return membership

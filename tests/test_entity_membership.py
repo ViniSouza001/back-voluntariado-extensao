@@ -1,7 +1,7 @@
 import unittest
 from datetime import UTC, date, datetime, timedelta
 
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, select
 from sqlalchemy.orm import Session
 
 import app.models  # noqa: F401 - register all tables with SQLAlchemy
@@ -9,9 +9,11 @@ from app.core.exceptions import ForbiddenError
 from app.db.base import Base
 from app.models.entity import Entity
 from app.models.member_entity import MemberEntity, MemberPosition
+from app.models.notification import Notification, NotificationType
 from app.models.user import User
-from app.models.vacancies import Vacancies, VacancyBranch, VacancyModality
-from app.schemas.vacancies import CreateVacancies, UpdateVacancies
+from app.models.vacancy import Vacancies, VacancyBranch, VacancyModality
+from app.models.vacancy_participant import VacancyParticipant
+from app.schemas.vacancy import CreateVacancies, UpdateVacancies
 from app.services.entity_membership import get_entity_position, require_entity_position
 from app.services.vacancies import VacancieService
 
@@ -95,6 +97,20 @@ class EntityMembershipTests(unittest.TestCase):
         vacancy = service.create(data, self.users[1])
         self.assertEqual(vacancy.number, "42")
         self.assertIsNone(vacancy.details)
+        created_notification = self.session.scalar(
+            select(Notification).where(
+                Notification.recipient_id == self.users[1].id,
+                Notification.notification_type == NotificationType.VACANCY_CREATED,
+            )
+        )
+        self.assertIsNotNone(created_notification)
+        self.assertEqual(created_notification.vacancy_id, vacancy.id)
+
+        self.session.add(VacancyParticipant(
+            id_vacancy=vacancy.id,
+            id_user=self.users[2].id,
+        ))
+        self.session.commit()
         with self.assertRaises(ForbiddenError):
             service.update(vacancy.id, UpdateVacancies(title="Título alterado"), self.users[2])
         with self.assertRaises(ForbiddenError):
@@ -118,4 +134,23 @@ class EntityMembershipTests(unittest.TestCase):
 
         service.update(vacancy.id, UpdateVacancies(title="Título alterado"), self.users[0])
         self.assertEqual(self.session.get(Vacancies, vacancy.id).title, "Título alterado")
+        updated_notification = self.session.scalar(
+            select(Notification).where(
+                Notification.recipient_id == self.users[2].id,
+                Notification.notification_type == NotificationType.VACANCY_UPDATED,
+            )
+        )
+        self.assertIsNotNone(updated_notification)
+        self.assertEqual(updated_notification.actor_id, self.users[0].id)
+        self.assertEqual(updated_notification.vacancy_id, vacancy.id)
+
         service.delete(vacancy.id, self.users[1])
+        deleted_notification = self.session.scalar(
+            select(Notification).where(
+                Notification.recipient_id == self.users[2].id,
+                Notification.notification_type == NotificationType.VACANCY_DELETED,
+            )
+        )
+        self.assertIsNotNone(deleted_notification)
+        self.assertEqual(deleted_notification.actor_id, self.users[1].id)
+        self.assertIsNone(deleted_notification.vacancy_id)

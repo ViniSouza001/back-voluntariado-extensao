@@ -1,5 +1,5 @@
 from sqlalchemy import select
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, selectinload
 
 from app.models.member_entity import MemberEntity
 
@@ -22,3 +22,20 @@ class RepositoryMemberEntity:
                 MemberEntity.id_entity == id_entity,
             )
         )
+
+    @staticmethod
+    def list_from_entity(
+        session: Session,
+        id_entity: int,
+    ) -> list[MemberEntity]:
+        query = (
+            select(MemberEntity)
+            .options(selectinload(MemberEntity.user))
+            .where(MemberEntity.id_entity == id_entity)
+            .order_by(MemberEntity.id.asc())
+        )
+        return list(session.scalars(query).all())
+
+    @staticmethod
+    def delete(session: Session, membership: MemberEntity) -> None:
+        session.delete(membership)

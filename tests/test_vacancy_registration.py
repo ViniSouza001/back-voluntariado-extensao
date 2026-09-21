@@ -14,7 +14,7 @@ from app.main import app
 from app.models.entity import Entity
 from app.models.member_entity import MemberEntity, MemberPosition
 from app.models.user import User
-from app.schemas.vacancies import BR_TZ
+from app.schemas.vacancy import BR_TZ
 
 
 class VacancyRegistrationTests(unittest.TestCase):

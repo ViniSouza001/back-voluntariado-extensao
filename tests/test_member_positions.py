@@ -2,7 +2,7 @@ import unittest
 from datetime import date
 
 from fastapi.testclient import TestClient
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, select
 from sqlalchemy.orm import Session
 from sqlalchemy.pool import StaticPool
 
@@ -13,6 +13,7 @@ from app.db.session import get_session
 from app.main import app
 from app.models.entity import Entity
 from app.models.member_entity import MemberEntity, MemberPosition
+from app.models.notification import Notification, NotificationType
 from app.models.user import User
 
 
@@ -70,6 +71,17 @@ class MemberPositionTests(unittest.TestCase):
             json={"position": position},
         )
 
+    def list_members(self, entity_id):
+        return self.client.get(f"/api/v1/entities/{entity_id}/members")
+
+    def remove_member(self, entity_id, user_id):
+        return self.client.delete(
+            f"/api/v1/entities/{entity_id}/members/{user_id}"
+        )
+
+    def leave_entity(self, entity_id):
+        return self.client.delete(f"/api/v1/entities/{entity_id}/leave")
+
     def test_admin_can_promote_and_demote_existing_member(self):
         entity_id = self.entities[0].id
         user_id = self.users[2].id
@@ -82,6 +94,19 @@ class MemberPositionTests(unittest.TestCase):
         self.assertEqual(
             self.session.get(MemberEntity, 3).position, MemberPosition.MEMBER
         )
+        notifications = self.session.scalars(
+            select(Notification).where(
+                Notification.recipient_id == user_id,
+                Notification.notification_type
+                == NotificationType.ENTITY_ROLE_CHANGED,
+            )
+        ).all()
+        self.assertEqual(len(notifications), 3)
+        self.assertTrue(all(
+            notification.actor_id == self.users[0].id
+            and notification.entity_id == entity_id
+            for notification in notifications
+        ))
 
     def test_editor_and_member_cannot_change_roles(self):
         for actor in (self.users[1], self.users[2]):
@@ -136,6 +161,108 @@ class MemberPositionTests(unittest.TestCase):
         self.assertEqual(
             self.change_role(self.entities[0].id, self.users[2].id, "admin").status_code,
             401,
+        )
+
+    def test_all_entity_positions_can_list_members(self):
+        expected_positions = ["admin", "editor", "member"]
+
+        for actor in self.users[:3]:
+            with self.subTest(actor=actor.name):
+                self.current_user = actor
+                response = self.list_members(self.entities[0].id)
+                self.assertEqual(response.status_code, 200)
+                self.assertEqual(
+                    [member["position"] for member in response.json()],
+                    expected_positions,
+                )
+
+        self.current_user = self.users[3]
+        self.assertEqual(self.list_members(self.entities[0].id).status_code, 403)
+
+    def test_only_admin_can_remove_entity_member(self):
+        entity_id = self.entities[0].id
+
+        for actor in (self.users[1], self.users[2], self.users[3]):
+            with self.subTest(actor=actor.name):
+                self.current_user = actor
+                self.assertEqual(
+                    self.remove_member(entity_id, self.users[2].id).status_code,
+                    403,
+                )
+
+        self.current_user = self.users[0]
+        response = self.remove_member(entity_id, self.users[2].id)
+        self.assertEqual(response.status_code, 204)
+        self.assertIsNone(
+            self.session.query(MemberEntity).filter_by(
+                id_user=self.users[2].id,
+                id_entity=entity_id,
+            ).first()
+        )
+        notification = self.session.scalar(
+            select(Notification).where(
+                Notification.recipient_id == self.users[2].id,
+                Notification.notification_type
+                == NotificationType.ENTITY_MEMBER_REMOVED,
+            )
+        )
+        self.assertIsNotNone(notification)
+        self.assertEqual(notification.actor_id, self.users[0].id)
+        self.assertEqual(notification.entity_id, entity_id)
+
+    def test_member_can_leave_entity_and_receives_notification(self):
+        self.current_user = self.users[2]
+
+        response = self.leave_entity(self.entities[0].id)
+
+        self.assertEqual(response.status_code, 204)
+        self.assertIsNone(
+            self.session.query(MemberEntity).filter_by(
+                id_user=self.users[2].id,
+                id_entity=self.entities[0].id,
+            ).first()
+        )
+        notification = self.session.scalar(
+            select(Notification).where(
+                Notification.recipient_id == self.users[2].id,
+                Notification.notification_type
+                == NotificationType.ENTITY_MEMBER_LEFT,
+            )
+        )
+        self.assertIsNotNone(notification)
+        self.assertEqual(notification.entity_id, self.entities[0].id)
+
+    def test_last_admin_cannot_leave_entity(self):
+        response = self.leave_entity(self.entities[0].id)
+
+        self.assertEqual(response.status_code, 409)
+        self.assertIsNotNone(
+            self.session.query(MemberEntity).filter_by(
+                id_user=self.users[0].id,
+                id_entity=self.entities[0].id,
+            ).first()
+        )
+        notification = self.session.scalar(
+            select(Notification).where(
+                Notification.recipient_id == self.users[0].id,
+                Notification.notification_type
+                == NotificationType.ENTITY_MEMBER_LEFT,
+            )
+        )
+        self.assertIsNone(notification)
+
+    def test_last_admin_cannot_be_removed(self):
+        response = self.remove_member(
+            self.entities[0].id,
+            self.users[0].id,
+        )
+
+        self.assertEqual(response.status_code, 409)
+        self.assertIsNotNone(
+            self.session.query(MemberEntity).filter_by(
+                id_user=self.users[0].id,
+                id_entity=self.entities[0].id,
+            ).first()
         )
 
 

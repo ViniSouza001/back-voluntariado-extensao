@@ -2,7 +2,7 @@ from sqlalchemy.ext.asyncio import session
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.models.vacancies import Vacancies, VacancyModality
+from app.models.vacancy import Vacancies, VacancyModality
 
 
 class RepositoryVacancy:

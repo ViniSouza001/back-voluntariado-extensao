@@ -2,7 +2,7 @@ from datetime import datetime, timezone, timedelta, UTC
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, field_serializer, model_validator
 
-from app.models.vacancies import VacancyModality, VacancyBranch
+from app.models.vacancy import VacancyModality, VacancyBranch
 
 BR_TZ = timezone(timedelta(hours=-3))
 

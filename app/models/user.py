@@ -31,3 +31,22 @@ class User(Base):
     email_confirmation = relationship(
         "EmailConfirmation", back_populates="user", cascade="all, delete-orphan"
     )
+
+    vacancy_participations = relationship(
+        "VacancyParticipant", back_populates="user", cascade="all, delete-orphan"
+    )
+
+    notifications_received = relationship(
+        "Notification",
+        foreign_keys="Notification.recipient_id",
+        back_populates="recipient",
+        cascade="all, delete-orphan",
+        passive_deletes=True,
+    )
+
+    notifications_triggered = relationship(
+        "Notification",
+        foreign_keys="Notification.actor_id",
+        back_populates="actor",
+        passive_deletes=True,
+    )

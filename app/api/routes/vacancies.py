@@ -1,10 +1,11 @@
-from fastapi import APIRouter, status
+from fastapi import APIRouter, Response, status
 
-from app.api.dependencies import BaseSession
-from app.models.vacancies import VacancyModality
-from app.api.dependencies import ActualUser
-from app.schemas.vacancies import CreateVacancies, ResponseVacancies, UpdateVacancies, ListVacancies
+from app.models.vacancy import VacancyModality
+from app.api.dependencies import ActualUser, BaseSession
+from app.schemas.vacancy import CreateVacancies, ResponseVacancies, UpdateVacancies, ListVacancies
 from app.services.vacancies import VacancieService
+from app.services.vacancy_participants import VacancyParticipantService
+from app.schemas.vacancy_participant import VacancyParticipantResponse
 
 router = APIRouter(prefix="/vacancies", tags=["vacancies"])
 
@@ -32,6 +33,49 @@ def list_vacancies(
         title=title,
         modality=modality
     )
+
+
+@router.get(
+    "/{id_vacancy}/participants",
+    response_model=list[VacancyParticipantResponse],
+)
+def list_vacancy_participants(
+    id_vacancy: int,
+    user: ActualUser,
+    session: BaseSession,
+):
+    return VacancyParticipantService(session).list_participants(
+        id_vacancy, user
+    )
+
+
+@router.delete(
+    "/{id_vacancy}/participants/me",
+    status_code=status.HTTP_204_NO_CONTENT,
+)
+def leave_vacancy(
+    id_vacancy: int,
+    user: ActualUser,
+    session: BaseSession,
+) -> Response:
+    VacancyParticipantService(session).leave_vacancy(id_vacancy, user)
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+@router.delete(
+    "/{id_vacancy}/participants/{id_user}",
+    status_code=status.HTTP_204_NO_CONTENT,
+)
+def remove_vacancy_participant(
+    id_vacancy: int,
+    id_user: int,
+    user: ActualUser,
+    session: BaseSession,
+) -> Response:
+    VacancyParticipantService(session).remove_participant(
+        id_vacancy, id_user, user
+    )
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 @router.patch("/{id_vacancy}", response_model=ResponseVacancies)
 def update_vacancy(id_vacancy: int, data: UpdateVacancies, user: ActualUser, session: BaseSession):

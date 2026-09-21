@@ -59,3 +59,10 @@ class UpdatePassword(BaseModel):
     current_password: str = Field(min_length=1, max_length=72)
     new_password: str = Field(min_length=6, max_length=72)
     new_password_confirmation: str = Field(min_length=6, max_length=72)
+
+
+class UserSummary(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    name: str

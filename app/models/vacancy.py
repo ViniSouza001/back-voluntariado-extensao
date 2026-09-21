@@ -1,7 +1,7 @@
 from datetime import date, datetime, UTC
 
 from sqlalchemy import Boolean, Date, String, TIMESTAMP, DateTime, ForeignKey
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from enum import StrEnum
 
@@ -53,3 +53,13 @@ class Vacancies(Base):
     
     city: Mapped[str | None] = mapped_column(String(100), nullable=True)
     uf: Mapped[str | None] = mapped_column(String(2), nullable=True)
+
+    participants = relationship(
+        "VacancyParticipant",
+        back_populates="vacancy",
+        cascade="all, delete-orphan",
+    )
+
+    notifications = relationship(
+        "Notification", back_populates="vacancy", passive_deletes=True
+    )
