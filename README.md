@@ -85,11 +85,6 @@ python -c "import secrets; print(secrets.token_urlsafe(32))"
 </p>
 
 <p>
-    <img src="./assets/gif/zumbizinho.gif" width=100 align="middle">
-    Caso o comando não funcione, você pode apenas ver se na raiz do projeto backend tem as pastas "data" e "uploads"
-</p>
-
-<p>
     <img src="./assets/gif/notch.webp" width=70 align="middle">
     Criar e atualizar o banco de dados
 </p>
