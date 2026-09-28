@@ -20,6 +20,9 @@ class Entity(Base):
     members = relationship(
         "MemberEntity", back_populates="entity", cascade="all, delete-orphan"
     )
+    join_requests = relationship(
+        "EntityJoinRequest", back_populates="entity", cascade="all, delete-orphan"
+    )
 
     notifications = relationship(
         "Notification", back_populates="entity", passive_deletes=True

@@ -27,6 +27,10 @@ class User(Base):
     entity_bindings = relationship(
         "MemberEntity", back_populates="user", cascade="all, delete-orphan"
     )
+    join_requests = relationship(
+        "EntityJoinRequest", foreign_keys="EntityJoinRequest.user_id",
+        back_populates="user", cascade="all, delete-orphan"
+    )
 
     email_confirmation = relationship(
         "EmailConfirmation", back_populates="user", cascade="all, delete-orphan"

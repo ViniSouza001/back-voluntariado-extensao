@@ -6,6 +6,12 @@ from app.models.entity import Entity
 
 class RepositoryEntity:
     @staticmethod
+    def list_all(session: Session) -> list[Entity]:
+        return list(session.scalars(
+            select(Entity).order_by(Entity.name.asc(), Entity.id.asc())
+        ).all())
+
+    @staticmethod
     def search_for_slug(session: Session, slug: str) -> Entity | None:
         return session.scalar(select(Entity).where(Entity.slug == slug.lower()))
 

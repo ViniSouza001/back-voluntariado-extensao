@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 
 from app.core.exceptions import NotFoundError
 from app.models.entity import Entity
+from app.models.entity_join_request import EntityJoinRequest
 from app.models.invitation import Invitation, InvitationStatus
 from app.models.member_entity import MemberPosition
 from app.models.notification import Notification, NotificationType
@@ -27,6 +28,37 @@ class NotificationService:
         """Add a notification to the current transaction without committing it."""
         notification = Notification(**data.model_dump())
         return RepositoryNotification.create(self.session, notification)
+
+    def notify_entity_join_requested(
+        self,
+        recipient_id: int,
+        request: EntityJoinRequest,
+    ) -> Notification:
+        return self.create(CreateNotification(
+            recipient_id=recipient_id,
+            actor_id=request.user_id,
+            notification_type=NotificationType.ENTITY_JOIN_REQUESTED,
+            title="Nova solicitação de entrada",
+            message=(
+                f"{request.user.name} solicitou entrada na entidade "
+                f"{request.entity.name}."
+            ),
+            entity_id=request.entity_id,
+        ))
+
+    def notify_entity_join_request_accepted(
+        self,
+        request: EntityJoinRequest,
+        reviewer_id: int,
+    ) -> Notification:
+        return self.create(CreateNotification(
+            recipient_id=request.user_id,
+            actor_id=reviewer_id,
+            notification_type=NotificationType.ENTITY_MEMBER_JOINED,
+            title="Você entrou em uma entidade",
+            message=f"Agora você faz parte da entidade {request.entity.name}.",
+            entity_id=request.entity_id,
+        ))
 
     def notify_invitation_received(
         self,

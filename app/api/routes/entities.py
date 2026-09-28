@@ -1,14 +1,25 @@
 from fastapi import APIRouter, Response, status
 
 from app.api.dependencies import ActualUser, BaseSession
+from app.repositories.entities import RepositoryEntity
 from app.schemas.entity import EntityCreation, EntityResponse
+from app.schemas.entity_join_request import (
+    DecideEntityJoinRequest,
+    EntityJoinRequestResponse,
+)
 from app.schemas.entity_membership import EntityMemberResponse, EntityMembershipResponse
 from app.schemas.member_position import UpdateMemberPosition, MemberPositionResponse
+from app.services.entity_members import EntityMemberService
+from app.services.entity_join_requests import EntityJoinRequestService
 from app.services.entities import EntityService
 from app.services.member_positions import change_member_position as update_position
-from app.services.entity_members import EntityMemberService
 
 router = APIRouter(prefix="/entities", tags=["entities"])
+
+
+@router.get("", response_model=list[EntityResponse])
+def list_entities(session: BaseSession):
+    return RepositoryEntity.list_all(session)
 
 
 @router.get("/me", response_model=EntityMembershipResponse | None)
@@ -16,7 +27,51 @@ def get_my_entity(actual_user: ActualUser, session: BaseSession):
     return EntityService(session).get_for_user(actual_user)
 
 
+@router.get("/join-requests/me", response_model=list[EntityJoinRequestResponse])
+def list_my_join_requests(actual_user: ActualUser, session: BaseSession):
+    return EntityJoinRequestService(session).list_for_user(actual_user)
 
+
+@router.post(
+    "/{id_entity}/join-requests",
+    response_model=EntityJoinRequestResponse,
+    status_code=status.HTTP_201_CREATED,
+)
+def create_join_request(
+    id_entity: int, actual_user: ActualUser, session: BaseSession
+):
+    return EntityJoinRequestService(session).create(id_entity, actual_user)
+
+
+@router.get(
+    "/{id_entity}/join-requests",
+    response_model=list[EntityJoinRequestResponse],
+)
+def list_entity_join_requests(
+    id_entity: int,
+    actual_user: ActualUser,
+    session: BaseSession,
+    pending_only: bool = True,
+):
+    return EntityJoinRequestService(session).list_for_entity(
+        id_entity, actual_user, pending_only
+    )
+
+
+@router.patch(
+    "/{id_entity}/join-requests/{id_request}",
+    response_model=EntityJoinRequestResponse,
+)
+def decide_join_request(
+    id_entity: int,
+    id_request: int,
+    data: DecideEntityJoinRequest,
+    actual_user: ActualUser,
+    session: BaseSession,
+):
+    return EntityJoinRequestService(session).decide(
+        id_entity, id_request, data.status, actual_user
+    )
 @router.patch("/{id_entity}/members/{id_user}/position", response_model=MemberPositionResponse)
 def change_member_position(
     id_entity: int,

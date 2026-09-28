@@ -19,6 +19,7 @@ def utc_now() -> datetime:
 
 
 class NotificationType(StrEnum):
+    ENTITY_JOIN_REQUESTED = "entity_join_requested"
     INVITATION_RECEIVED = "invitation_received"
     INVITATION_ACCEPTED = "invitation_accepted"
     INVITATION_REJECTED = "invitation_rejected"

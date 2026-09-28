@@ -121,8 +121,22 @@ python -m alembic current
 ```
 
 <p>
-    A migração mais recente deste projeto é <code>d7c81a4e69b2</code>.
+    A migração mais recente deste projeto é <code>b6f2e0a9c431</code>.
 </p>
+
+<h2>Solicitações para entrar em uma entidade</h2>
+
+<p>Um usuário autenticado pode solicitar entrada em uma entidade cadastrada. O envio cria uma notificação para cada administrador da entidade, mas não para o solicitante. Somente um administrador pode aceitar ou recusar. No aceite, o usuário entra com o papel <code>member</code> e recebe a notificação "Agora você faz parte da entidade [nome]".</p>
+
+<ul>
+    <li><code>GET /api/v1/entities</code>: lista entidades cadastradas.</li>
+    <li><code>POST /api/v1/entities/{id_entity}/join-requests</code>: envia uma solicitação (Bearer token).</li>
+    <li><code>GET /api/v1/entities/join-requests/me</code>: lista as solicitações do usuário autenticado.</li>
+    <li><code>GET /api/v1/entities/{id_entity}/join-requests</code>: lista solicitações pendentes para administradores. Use <code>?pending_only=false</code> para incluir o histórico.</li>
+    <li><code>PATCH /api/v1/entities/{id_entity}/join-requests/{id_request}</code>: administrador decide com JSON <code>{"status":"accepted"}</code> ou <code>{"status":"rejected"}</code>.</li>
+</ul>
+
+<p>Um usuário pode pertencer a apenas uma entidade. Solicitações pendentes duplicadas para a mesma entidade são recusadas; ao aceitar uma solicitação, as outras pendentes do mesmo usuário são encerradas.</p>
 
 <h1>O que mudou no banco e na API</h1>
 
