@@ -18,8 +18,30 @@ router = APIRouter(prefix="/entities", tags=["entities"])
 
 
 @router.get("", response_model=list[EntityResponse])
-def list_entities(session: BaseSession):
-    return RepositoryEntity.list_all(session)
+def list_entities(
+    session: BaseSession,
+    id: int | None = None,
+    name: str | None = None,
+    slug: str | None = None,
+    city: str | None = None,
+    uf: str | None = None,
+    sector: str | None = None,):
+    return RepositoryEntity.search(session, id=id, name=name, slug=slug, city=city, uf=uf, sector=sector)
+
+@router.get("/near-me", response_model=list[EntityResponse])
+def list_nearby_entities(
+    actual_user: ActualUser,
+    session: BaseSession
+):
+    return RepositoryEntity.search(
+        session,
+        id=None,
+        name=None,
+        slug=None,
+        city=actual_user.city,
+        uf=actual_user.uf,
+        sector=None
+    )
 
 
 @router.get("/me", response_model=EntityMembershipResponse | None)

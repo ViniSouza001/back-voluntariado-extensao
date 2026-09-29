@@ -26,12 +26,16 @@ class EntityService:
         if RepositoryEntity.search_for_slug(self.session, slug):
             raise ConflictError("Já existe uma entidade com este mesmo slug")
 
+        # verificar se a primeira letra da cidade é minúscula
+        if data.city[0].islower():
+            data.city = data.city.capitalize()
+
         entity = Entity(
             name = data.name.strip(),
             slug = slug,
             sector = data.sector.strip(),
             description = data.description.strip(),
-            city = data.city.strip(),
+            city = data.city.strip().title(),
             uf = data.uf.upper()
         )
 
@@ -59,3 +63,7 @@ class EntityService:
             self.session.rollback()
             raise
         return entity
+
+
+        
+        

@@ -25,3 +25,15 @@ class EntityResponse(BaseModel):
     city: str
     uf: str
     created_at: date
+
+class EntityList(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    name: str
+    slug: str
+    sector: str
+    description: str
+    city: str
+    uf: str
+    created_at: date
