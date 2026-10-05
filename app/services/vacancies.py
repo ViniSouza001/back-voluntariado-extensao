@@ -36,8 +36,8 @@ class VacancieService:
             branch = data.branch,
             starts_at = data.starts_at,
             ends_at = data.ends_at,
-
-            modality = data.modality
+            modality = data.modality,
+            requires_approval = data.requires_approval
         )
 
         if data.modality == VacancyModality.IN_PERSON:

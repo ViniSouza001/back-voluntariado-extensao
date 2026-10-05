@@ -6,6 +6,11 @@ from app.schemas.vacancy import CreateVacancies, ResponseVacancies, UpdateVacanc
 from app.services.vacancies import VacancieService
 from app.services.vacancy_participants import VacancyParticipantService
 from app.schemas.vacancy_participant import VacancyParticipantResponse
+from app.schemas.vacancy_join_request import (
+    DecideVacancyJoinRequest,
+    VacancyJoinRequestResponse,
+)
+from app.services.vacancy_join_requests import VacancyJoinRequestService
 
 router = APIRouter(prefix="/vacancies", tags=["vacancies"])
 
@@ -13,7 +18,7 @@ router = APIRouter(prefix="/vacancies", tags=["vacancies"])
 def create_vacancy(data: CreateVacancies, user: ActualUser, session: BaseSession):
     return VacancieService(session).create(data, user)
 
-@router.get("/", response_model=list[ListVacancies])
+@router.get("", response_model=list[ListVacancies])
 def list_vacancies(
     session: BaseSession,
     id: int | None = None,
@@ -32,6 +37,53 @@ def list_vacancies(
         id_entity=id_entity,
         title=title,
         modality=modality
+    )
+
+
+@router.get("/join-requests/me", response_model=list[VacancyJoinRequestResponse])
+def list_my_vacancy_join_requests(user: ActualUser, session: BaseSession):
+    return VacancyJoinRequestService(session).list_for_user(user)
+
+
+@router.post(
+    "/{id_vacancy}/join-requests",
+    response_model=VacancyJoinRequestResponse,
+    status_code=status.HTTP_201_CREATED,
+)
+def create_vacancy_join_request(
+    id_vacancy: int, user: ActualUser, session: BaseSession
+):
+    return VacancyJoinRequestService(session).create(id_vacancy, user)
+
+
+@router.get(
+    "/{id_vacancy}/join-requests",
+    response_model=list[VacancyJoinRequestResponse],
+)
+def list_vacancy_join_requests(
+    id_vacancy: int,
+    user: ActualUser,
+    session: BaseSession,
+    pending_only: bool = True,
+):
+    return VacancyJoinRequestService(session).list_for_vacancy(
+        id_vacancy, user, pending_only
+    )
+
+
+@router.patch(
+    "/{id_vacancy}/join-requests/{id_request}",
+    response_model=VacancyJoinRequestResponse,
+)
+def decide_vacancy_join_request(
+    id_vacancy: int,
+    id_request: int,
+    data: DecideVacancyJoinRequest,
+    user: ActualUser,
+    session: BaseSession,
+):
+    return VacancyJoinRequestService(session).decide(
+        id_vacancy, id_request, data.status, user
     )
 
 

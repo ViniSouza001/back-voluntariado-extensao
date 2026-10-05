@@ -32,6 +32,11 @@ class User(Base):
         back_populates="user", cascade="all, delete-orphan"
     )
 
+    vacancy_join_requests = relationship(
+        "VacancyJoinRequest", foreign_keys="VacancyJoinRequest.user_id",
+        back_populates="user", cascade="all, delete-orphan"
+    )
+
     email_confirmation = relationship(
         "EmailConfirmation", back_populates="user", cascade="all, delete-orphan"
     )

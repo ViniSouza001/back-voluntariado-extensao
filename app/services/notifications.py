@@ -10,6 +10,7 @@ from app.models.member_entity import MemberPosition
 from app.models.notification import Notification, NotificationType
 from app.models.user import User
 from app.models.vacancy import Vacancies
+from app.models.vacancy_join_request import VacancyJoinRequest
 from app.repositories.notifications import RepositoryNotification
 from app.schemas.notification import (
     CreateNotification,
@@ -58,6 +59,23 @@ class NotificationService:
             title="Você entrou em uma entidade",
             message=f"Agora você faz parte da entidade {request.entity.name}.",
             entity_id=request.entity_id,
+        ))
+
+    def notify_vacancy_join_requested(
+        self,
+        recipient_id: int,
+        request: VacancyJoinRequest,
+    ) -> Notification:
+        return self.create(CreateNotification(
+            recipient_id=recipient_id,
+            actor_id=request.user_id,
+            notification_type=NotificationType.VACANCY_JOIN_REQUESTED,
+            title="Nova solicitação para uma vaga",
+            message=(
+                f"{request.user.name} solicitou participar da vaga "
+                f"{request.vacancy.title}."
+            ),
+            vacancy_id=request.vacancy_id,
         ))
 
     def notify_invitation_received(

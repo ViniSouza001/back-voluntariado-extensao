@@ -38,6 +38,7 @@ class Vacancies(Base):
     title: Mapped[str] = mapped_column(String(100), nullable=False)
     description: Mapped[str] = mapped_column(String(255), nullable=True)
     id_entity: Mapped[int] = mapped_column(ForeignKey("entities.id"), nullable=False)
+    requires_approval: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
     # Datas guardadas em UTC, sem informação de fuso na coluna.
     posted_at: Mapped[datetime] = mapped_column(DateTime(timezone=False), nullable=False, default=utc_now)
     starts_at: Mapped[datetime] = mapped_column(DateTime(timezone=False), nullable=False)
@@ -60,6 +61,14 @@ class Vacancies(Base):
         cascade="all, delete-orphan",
     )
 
+    join_requests = relationship(
+        "VacancyJoinRequest", back_populates="vacancy", cascade="all, delete-orphan"
+    )
+
     notifications = relationship(
         "Notification", back_populates="vacancy", passive_deletes=True
+    )
+
+    entity = relationship (
+        "Entity", back_populates="vacancies"
     )

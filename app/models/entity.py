@@ -27,3 +27,7 @@ class Entity(Base):
     notifications = relationship(
         "Notification", back_populates="entity", passive_deletes=True
     )
+
+    vacancies = relationship (
+        "Vacancies", back_populates="entity"
+    )

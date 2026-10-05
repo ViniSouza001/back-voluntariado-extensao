@@ -3,6 +3,7 @@ from datetime import datetime, timezone, timedelta, UTC
 from pydantic import BaseModel, ConfigDict, Field, field_validator, field_serializer, model_validator
 
 from app.models.vacancy import VacancyModality, VacancyBranch
+from app.schemas.entity import EntitySummary
 
 BR_TZ = timezone(timedelta(hours=-3))
 
@@ -14,6 +15,7 @@ class ResponseVacancies(BaseModel):
     starts_at: datetime
     ends_at: datetime
     branch: VacancyBranch
+    entity: EntitySummary
 
     modality: VacancyModality
 
@@ -24,6 +26,7 @@ class ResponseVacancies(BaseModel):
 
     city: str | None
     uf: str | None
+    requires_approval: bool
     model_config = ConfigDict(from_attributes=True)
 
     @field_serializer("posted_at", "starts_at", "ends_at", when_used="json")
@@ -52,6 +55,7 @@ class CreateVacancies(BaseModel):
 
     city: str | None = Field(default=None, min_length=1, max_length=100)
     uf: str | None = Field(default=None, min_length=2, max_length=2)
+    requires_approval: bool = False
 
     @field_validator("title", "description", "branch")
     @classmethod
@@ -108,6 +112,7 @@ class UpdateVacancies(BaseModel):
 
     city: str | None = Field(default=None, min_length=1, max_length=100)
     uf: str | None = Field(default=None, min_length=2, max_length=2)
+    requires_approval: bool | None = None
 
     @model_validator(mode="after")
     def validate_location(self):
@@ -131,6 +136,7 @@ class ListVacancies(BaseModel):
     starts_at: datetime
     ends_at: datetime
     branch: VacancyBranch
+    entity: EntitySummary
 
     modality: VacancyModality
 
@@ -141,6 +147,7 @@ class ListVacancies(BaseModel):
 
     city: str | None
     uf: str | None
+    requires_approval: bool
 
     @field_serializer("posted_at", "starts_at", "ends_at", when_used="json")
     def serialize_to_brasilia_tz(self, dt: datetime) -> str:

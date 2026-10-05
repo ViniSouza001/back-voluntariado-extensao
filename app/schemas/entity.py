@@ -37,3 +37,9 @@ class EntityList(BaseModel):
     city: str
     uf: str
     created_at: date
+
+class EntitySummary(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    
+    id: int
+    name: str

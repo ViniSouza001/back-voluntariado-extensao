@@ -33,6 +33,7 @@ class NotificationType(StrEnum):
     VACANCY_PARTICIPANT_JOINED = "vacancy_participant_joined"
     VACANCY_PARTICIPANT_LEFT = "vacancy_participant_left"
     VACANCY_PARTICIPANT_REMOVED = "vacancy_participant_removed"
+    VACANCY_JOIN_REQUESTED = "vacancy_join_requested"
 
 
 class Notification(Base):

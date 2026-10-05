@@ -10,6 +10,7 @@ from app.core.exceptions import (
     ValidationError,
 )
 from app.models.invitation import Invitation, InvitationStatus, InvitationType
+from app.models.entity_join_request import JoinRequestStatus
 from app.models.member_entity import MemberEntity, MemberPosition
 from app.models.user import User
 from app.models.vacancy_participant import VacancyParticipant
@@ -18,6 +19,7 @@ from app.repositories.invitations import RepositoryInvitation
 from app.repositories.users import RepositoryUser
 from app.repositories.vacancies import RepositoryVacancy
 from app.repositories.vacancy_participants import RepositoryVacancyParticipant
+from app.repositories.vacancy_join_requests import RepositoryVacancyJoinRequest
 from app.schemas.invitation import (
     CreateInvitation,
     InvitationListsResponse,
@@ -239,6 +241,12 @@ class InvitationService:
                     id_user=user.id,
                 ),
             )
+            pending_request = RepositoryVacancyJoinRequest.search_pending(
+                self.session, user.id, vacancy.id
+            )
+            if pending_request is not None:
+                pending_request.status = JoinRequestStatus.CANCELED
+                pending_request.reviewed_at = datetime.now(UTC).replace(tzinfo=None)
 
         invitation.status = data.status
 
