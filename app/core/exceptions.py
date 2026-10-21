@@ -19,3 +19,6 @@ class ValidationError(ApplicationError):
 
 class ForbiddenError(ApplicationError):
     status_code = 403
+
+class RateLimitError(ApplicationError):
+    status_code = 429

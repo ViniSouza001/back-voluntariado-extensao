@@ -4,6 +4,7 @@ from app.models.member_entity import MemberEntity, MemberPosition
 from app.models.user import User
 from app.models.vacancy import Vacancies
 from app.models.invitation import Invitation
+from app.models.invitation_send_attempt import InvitationSendAttempt
 from app.models.vacancy_participant import VacancyParticipant
 from app.models.notification import Notification, NotificationType
 from app.models.entity_join_request import EntityJoinRequest, JoinRequestStatus
@@ -17,6 +18,7 @@ __all__ = [
     "User",
     "Vacancies",
     "Invitation",
+    "InvitationSendAttempt",
     "VacancyParticipant",
     "Notification",
     "NotificationType",

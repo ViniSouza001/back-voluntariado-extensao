@@ -1,7 +1,8 @@
-from sqlalchemy import and_, delete, or_, select
+from sqlalchemy import delete, or_, select
 from sqlalchemy.orm import Session, selectinload
 
 from app.models.invitation import Invitation, InvitationStatus, InvitationType
+from app.models.invitation_send_attempt import InvitationSendAttempt
 
 class RepositoryInvitation:
 
@@ -11,7 +12,7 @@ class RepositoryInvitation:
         return invitation
 
     @staticmethod
-    def search_for_user(session: Session, id_user: int) -> list[Invitation]:
+    def search_received(session: Session, id_user: int) -> list[Invitation]:
         query = (
             select(Invitation)
             .options(
@@ -19,20 +20,34 @@ class RepositoryInvitation:
                 selectinload(Invitation.recipient),
             )
             .where(
-                or_(
-                    and_(
-                        Invitation.sender_id == id_user,
-                        Invitation.sender_archived_at.is_(None),
-                    ),
-                    and_(
-                        Invitation.recipient_id == id_user,
-                        Invitation.recipient_archived_at.is_(None),
-                    ),
-                )
+                Invitation.recipient_id == id_user,
+                Invitation.recipient_archived_at.is_(None),
             )
             .order_by(Invitation.sent_at.desc())
         )
         return list(session.scalars(query).all())
+
+    @staticmethod
+    def last_send_attempt(
+        session: Session, sender_id: int
+    ) -> InvitationSendAttempt | None:
+        return session.scalar(
+            select(InvitationSendAttempt)
+            .where(InvitationSendAttempt.sender_id == sender_id)
+            .order_by(
+                InvitationSendAttempt.attempted_at.desc(),
+                InvitationSendAttempt.id.desc(),
+            )
+            .limit(1)
+        )
+
+    @staticmethod
+    def record_send_attempt(
+        session: Session, sender_id: int
+    ) -> InvitationSendAttempt:
+        attempt = InvitationSendAttempt(sender_id=sender_id)
+        session.add(attempt)
+        return attempt
 
     @staticmethod
     def search_for_id(session: Session, id_invitation: int) -> Invitation | None:

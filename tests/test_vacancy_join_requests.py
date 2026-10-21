@@ -13,6 +13,7 @@ from app.db.session import get_session
 from app.main import app
 from app.models.entity import Entity
 from app.models.entity_join_request import JoinRequestStatus
+from app.models.invitation import Invitation
 from app.models.member_entity import MemberEntity, MemberPosition
 from app.models.notification import Notification, NotificationType
 from app.models.user import User
@@ -187,14 +188,24 @@ class VacancyJoinRequestTests(unittest.TestCase):
         request_id = self.client.post(self.path).json()["id"]
         self.current_user = self.admin
         invitation = self.client.post("/api/v1/invitations", json={
-            "recipient_id": self.requester.id,
+            "recipient_email": self.requester.email.upper(),
             "invitation_type": "vacancy",
             "target_id": self.vacancy.id,
         })
-        self.assertEqual(invitation.status_code, 201)
+        self.assertEqual(invitation.status_code, 202)
+        self.assertEqual(
+            invitation.json()["message"],
+            "Se o e-mail estiver cadastrado e puder receber o convite, ele será enviado.",
+        )
+        created_invitation = self.session.scalar(select(Invitation).where(
+            Invitation.sender_id == self.admin.id,
+            Invitation.recipient_id == self.requester.id,
+            Invitation.target_id == self.vacancy.id,
+        ))
+        self.assertIsNotNone(created_invitation)
         self.current_user = self.requester
         response = self.client.patch(
-            f"/api/v1/invitations/{invitation.json()['id']}/response",
+            f"/api/v1/invitations/{created_invitation.id}/response",
             json={"status": "accepted"},
         )
         self.assertEqual(response.status_code, 200)

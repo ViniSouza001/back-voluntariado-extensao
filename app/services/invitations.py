@@ -1,4 +1,4 @@
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
@@ -7,7 +7,7 @@ from app.core.exceptions import (
     ConflictError,
     ForbiddenError,
     NotFoundError,
-    ValidationError,
+    RateLimitError,
 )
 from app.models.invitation import Invitation, InvitationStatus, InvitationType
 from app.models.entity_join_request import JoinRequestStatus
@@ -34,6 +34,8 @@ from app.repositories.member_entities import RepositoryMemberEntity
 
 
 class InvitationService:
+    SEND_COOLDOWN = timedelta(minutes=2)
+
     def __init__(self, session: Session):
         self.session = session
 
@@ -69,21 +71,14 @@ class InvitationService:
             sender=UserSummary.model_validate(invitation.sender),
             recipient=UserSummary.model_validate(invitation.recipient),
             sent_at=invitation.sent_at,
-            read_at=invitation.recipient_read_at,
             status=invitation.status,
             invitation_type=invitation.invitation_type,
             target=target or self._get_invitation_target(invitation),
         )
 
-    def create_invitation(self, data: CreateInvitation, user: User) -> ResponseInvitation:
-        recipient = RepositoryUser.search_for_id(self.session, data.recipient_id)
-
-        if recipient is None:
-            raise NotFoundError("Usuário destinatário não encontrado")
-
-        if recipient.id == user.id:
-            raise ValidationError("Você não pode enviar um convite para si mesmo")
-
+    def create_invitation(
+        self, data: CreateInvitation, user: User
+    ) -> ResponseInvitation | None:
         target = None
 
         if data.invitation_type == InvitationType.ENTITY:
@@ -98,9 +93,6 @@ class InvitationService:
                 entity.id,
                 {MemberPosition.ADMIN},
             )
-
-            if RepositoryMemberEntity.search_by_user(self.session, recipient.id):
-                raise ConflictError("O usuário já participa de uma entidade")
 
             target = InvitationTarget(id=entity.id, name=entity.name)
 
@@ -117,12 +109,41 @@ class InvitationService:
                 {MemberPosition.ADMIN, MemberPosition.EDITOR},
             )
 
-            if RepositoryVacancyParticipant.search(
-                self.session, vacancy.id, recipient.id
-            ):
-                raise ConflictError("O usuário já participa desta vaga")
-
             target = InvitationTarget(id=vacancy.id, name=vacancy.title)
+
+        now = datetime.now(UTC).replace(tzinfo=None)
+        last_attempt = RepositoryInvitation.last_send_attempt(self.session, user.id)
+        if (
+            last_attempt is not None
+            and now - last_attempt.attempted_at < self.SEND_COOLDOWN
+        ):
+            raise RateLimitError(
+                "Aguarde 2 minutos antes de enviar outro convite"
+            )
+
+        RepositoryInvitation.record_send_attempt(self.session, user.id)
+        self.session.commit()
+
+        recipient = RepositoryUser.search_for_email(
+            self.session, str(data.recipient_email)
+        )
+
+        if recipient is None or recipient.id == user.id:
+            return None
+
+        if (
+            data.invitation_type == InvitationType.ENTITY
+            and RepositoryMemberEntity.search_by_user(self.session, recipient.id)
+        ):
+            return None
+
+        if (
+            data.invitation_type == InvitationType.VACANCY
+            and RepositoryVacancyParticipant.search(
+                self.session, data.target_id, recipient.id
+            )
+        ):
+            return None
 
         if RepositoryInvitation.search_pending(
             self.session,
@@ -130,7 +151,7 @@ class InvitationService:
             data.invitation_type,
             data.target_id,
         ):
-            raise ConflictError("Já existe um convite pendente para este usuário")
+            return None
 
         invitation = Invitation(
             sender_id=user.id,
@@ -148,9 +169,9 @@ class InvitationService:
             )
             self.session.commit()
             self.session.refresh(invitation)
-        except IntegrityError as error:
+        except IntegrityError:
             self.session.rollback()
-            raise ConflictError("Não foi possível criar o convite") from error
+            return None
         except Exception:
             self.session.rollback()
             raise
@@ -158,26 +179,10 @@ class InvitationService:
         return self._build_response(invitation, target)
 
     def list_invitations(self, user: User) -> InvitationListsResponse:
-        invitations = RepositoryInvitation.search_for_user(self.session, user.id)
-        received: list[ResponseInvitation] = []
-        sent: list[ResponseInvitation] = []
-
-        for invitation in invitations:
-            response = self._build_response(invitation)
-
-            if (
-                invitation.recipient_id == user.id
-                and invitation.recipient_archived_at is None
-            ):
-                received.append(response)
-
-            if (
-                invitation.sender_id == user.id
-                and invitation.sender_archived_at is None
-            ):
-                sent.append(response)
-
-        return InvitationListsResponse(received=received, sent=sent)
+        invitations = RepositoryInvitation.search_received(self.session, user.id)
+        return InvitationListsResponse(
+            received=[self._build_response(invitation) for invitation in invitations]
+        )
 
     def respond_to_invitation(
         self,
@@ -287,26 +292,6 @@ class InvitationService:
         except Exception:
             self.session.rollback()
             raise
-
-        return self._build_response(invitation)
-
-    def mark_as_read(
-        self,
-        id_invitation: int,
-        user: User,
-    ) -> ResponseInvitation:
-        invitation = RepositoryInvitation.search_for_id(
-            self.session, id_invitation
-        )
-        if invitation is None:
-            raise NotFoundError("Convite não encontrado")
-        if invitation.recipient_id != user.id:
-            raise ForbiddenError("Somente o destinatário pode visualizar o convite")
-
-        if invitation.recipient_read_at is None:
-            invitation.recipient_read_at = datetime.now(UTC).replace(tzinfo=None)
-            self.session.commit()
-            self.session.refresh(invitation)
 
         return self._build_response(invitation)
 

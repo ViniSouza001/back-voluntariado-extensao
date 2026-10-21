@@ -6,10 +6,16 @@ from sqlalchemy.orm import Session
 from sqlalchemy.pool import StaticPool
 
 import app.models  # noqa: F401 - registra os models no metadata
-from app.core.exceptions import ConflictError, ForbiddenError, ValidationError
+from app.core.exceptions import (
+    ConflictError,
+    ForbiddenError,
+    RateLimitError,
+)
 from app.db.base import Base
+from app.api.routes.invitation import create_invitation as create_invitation_route
 from app.models.entity import Entity
 from app.models.invitation import Invitation, InvitationStatus, InvitationType
+from app.models.invitation_send_attempt import InvitationSendAttempt
 from app.models.member_entity import MemberEntity, MemberPosition
 from app.models.notification import Notification, NotificationType
 from app.models.user import User
@@ -109,9 +115,65 @@ class InvitationPermissionTests(unittest.TestCase):
         self, invitation_type: InvitationType, target_id: int
     ) -> CreateInvitation:
         return CreateInvitation(
-            recipient_id=self.recipient.id,
+            recipient_email=self.recipient.email.upper(),
             invitation_type=invitation_type,
             target_id=target_id,
+        )
+
+    def expire_invitation_cooldown(self, sender: User) -> None:
+        attempt = self.session.scalar(
+            select(InvitationSendAttempt)
+            .where(InvitationSendAttempt.sender_id == sender.id)
+            .order_by(InvitationSendAttempt.attempted_at.desc())
+        )
+        attempt.attempted_at = (
+            datetime.now(UTC).replace(tzinfo=None) - timedelta(minutes=2, seconds=1)
+        )
+        self.session.commit()
+
+    def test_unknown_email_is_generic_and_starts_cooldown(self):
+        unknown_recipient = CreateInvitation(
+            recipient_email="unknown@example.com",
+            invitation_type=InvitationType.ENTITY,
+            target_id=self.entity.id,
+        )
+        self.assertIsNone(
+            self.service.create_invitation(unknown_recipient, self.admin)
+        )
+        self.assertEqual(self.session.scalars(select(Invitation)).all(), [])
+
+        with self.assertRaises(RateLimitError):
+            self.service.create_invitation(
+                self.invitation_data(InvitationType.ENTITY, self.entity.id),
+                self.admin,
+            )
+
+        self.expire_invitation_cooldown(self.admin)
+        response = self.service.create_invitation(
+            self.invitation_data(InvitationType.ENTITY, self.entity.id),
+            self.admin,
+        )
+        self.assertEqual(response.recipient.id, self.recipient.id)
+
+    def test_creation_route_returns_same_generic_message(self):
+        existing = create_invitation_route(
+            self.invitation_data(InvitationType.ENTITY, self.entity.id),
+            self.admin,
+            self.session,
+        )
+        unknown = create_invitation_route(
+            CreateInvitation(
+                recipient_email="unknown@example.com",
+                invitation_type=InvitationType.ENTITY,
+                target_id=self.other_entity.id,
+            ),
+            self.other_admin,
+            self.session,
+        )
+        self.assertEqual(existing, unknown)
+        self.assertEqual(
+            existing.message,
+            "Se o e-mail estiver cadastrado e puder receber o convite, ele será enviado.",
         )
 
     def test_only_admin_of_target_entity_can_create_entity_invitation(self):
@@ -151,7 +213,7 @@ class InvitationPermissionTests(unittest.TestCase):
         invitations = self.session.scalars(select(Invitation)).all()
         self.assertEqual(invitations, [])
 
-    def test_list_separates_received_and_sent_invitations(self):
+    def test_list_returns_only_received_invitations(self):
         received_data = self.invitation_data(
             InvitationType.ENTITY, self.entity.id
         )
@@ -159,9 +221,9 @@ class InvitationPermissionTests(unittest.TestCase):
             received_data, self.admin
         )
 
-        sent_invitation = self.service.create_invitation(
+        self.service.create_invitation(
             CreateInvitation(
-                recipient_id=self.admin.id,
+                recipient_email=self.admin.email,
                 invitation_type=InvitationType.FRIEND,
             ),
             self.recipient,
@@ -169,7 +231,7 @@ class InvitationPermissionTests(unittest.TestCase):
 
         self.service.create_invitation(
             CreateInvitation(
-                recipient_id=self.member.id,
+                recipient_email=self.member.email,
                 invitation_type=InvitationType.FRIEND,
             ),
             self.editor,
@@ -181,12 +243,8 @@ class InvitationPermissionTests(unittest.TestCase):
             [invitation.id for invitation in invitations.received],
             [received_invitation.id],
         )
-        self.assertEqual(
-            [invitation.id for invitation in invitations.sent],
-            [sent_invitation.id],
-        )
         self.assertEqual(invitations.received[0].target.id, self.entity.id)
-        self.assertIsNone(invitations.sent[0].target)
+        self.assertNotIn("sent", invitations.model_dump())
 
     def test_recipient_can_accept_entity_invitation_and_become_member(self):
         created = self.service.create_invitation(
@@ -303,30 +361,28 @@ class InvitationPermissionTests(unittest.TestCase):
 
     def test_user_cannot_invite_themself(self):
         data = CreateInvitation(
-            recipient_id=self.admin.id,
+            recipient_email=self.admin.email,
             invitation_type=InvitationType.ENTITY,
             target_id=self.entity.id,
         )
 
-        with self.assertRaises(ValidationError):
-            self.service.create_invitation(data, self.admin)
+        self.assertIsNone(self.service.create_invitation(data, self.admin))
 
     def test_user_already_in_entity_cannot_receive_entity_invitation(self):
         data = CreateInvitation(
-            recipient_id=self.editor.id,
+            recipient_email=self.editor.email,
             invitation_type=InvitationType.ENTITY,
             target_id=self.entity.id,
         )
 
-        with self.assertRaises(ConflictError):
-            self.service.create_invitation(data, self.admin)
+        self.assertIsNone(self.service.create_invitation(data, self.admin))
 
     def test_duplicate_pending_invitation_is_rejected(self):
         data = self.invitation_data(InvitationType.ENTITY, self.entity.id)
         self.service.create_invitation(data, self.admin)
+        self.expire_invitation_cooldown(self.admin)
 
-        with self.assertRaises(ConflictError):
-            self.service.create_invitation(data, self.admin)
+        self.assertIsNone(self.service.create_invitation(data, self.admin))
 
     def test_vacancy_participant_cannot_be_invited_again(self):
         data = self.invitation_data(InvitationType.VACANCY, self.vacancy.id)
@@ -337,25 +393,23 @@ class InvitationPermissionTests(unittest.TestCase):
             self.recipient,
         )
 
-        with self.assertRaises(ConflictError):
-            self.service.create_invitation(data, self.editor)
+        self.assertIsNone(self.service.create_invitation(data, self.editor))
 
-    def test_only_recipient_can_mark_invitation_as_read(self):
+    def test_invitations_have_no_read_state(self):
         created = self.service.create_invitation(
             self.invitation_data(InvitationType.ENTITY, self.entity.id),
             self.admin,
         )
 
-        with self.assertRaises(ForbiddenError):
-            self.service.mark_as_read(created.id, self.admin)
+        self.assertNotIn("read_at", created.model_dump())
+        self.assertNotIn("recipient_read_at", Invitation.__table__.columns)
+        notification = self.session.scalar(
+            select(Notification).where(Notification.invitation_id == created.id)
+        )
+        self.assertIsNotNone(notification)
+        self.assertIsNone(notification.read_at)
 
-        first_read = self.service.mark_as_read(created.id, self.recipient)
-        second_read = self.service.mark_as_read(created.id, self.recipient)
-
-        self.assertIsNotNone(first_read.read_at)
-        self.assertEqual(first_read.read_at, second_read.read_at)
-
-    def test_archive_hides_only_the_current_users_copy(self):
+    def test_archive_hides_received_invitation(self):
         created = self.service.create_invitation(
             self.invitation_data(InvitationType.ENTITY, self.entity.id),
             self.admin,
@@ -366,15 +420,8 @@ class InvitationPermissionTests(unittest.TestCase):
         recipient_invitations = self.service.list_invitations(self.recipient)
         sender_invitations = self.service.list_invitations(self.admin)
         self.assertEqual(recipient_invitations.received, [])
-        self.assertEqual(
-            [invitation.id for invitation in sender_invitations.sent],
-            [created.id],
-        )
+        self.assertEqual(sender_invitations.received, [])
         self.assertIsNotNone(self.session.get(Invitation, created.id))
-
-        self.service.archive_invitation(created.id, self.admin)
-        sender_invitations = self.service.list_invitations(self.admin)
-        self.assertEqual(sender_invitations.sent, [])
 
     def test_unrelated_user_cannot_archive_invitation(self):
         created = self.service.create_invitation(

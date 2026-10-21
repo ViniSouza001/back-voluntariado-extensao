@@ -31,9 +31,6 @@ class Invitation(Base):
     status: Mapped[InvitationStatus] = mapped_column(default=InvitationStatus.PENDING, nullable=False)
     invitation_type: Mapped[InvitationType]
     target_id: Mapped[int | None]
-    recipient_read_at: Mapped[datetime | None] = mapped_column(
-        DateTime(timezone=False), nullable=True
-    )
     sender_archived_at: Mapped[datetime | None] = mapped_column(
         DateTime(timezone=False), nullable=True
     )
