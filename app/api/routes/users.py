@@ -2,8 +2,6 @@ from fastapi import APIRouter, Response, status
 
 from app.api.dependencies import BaseSession, ActualUser
 from app.schemas.commom import ResponseMessage
-from app.core.config import get_configurations
-from app.core.exceptions import ForbiddenError
 from app.schemas.user import DeleteUser, UpdatePassword, UpdateUser, ResponseUser
 from app.services.users import UserService
 
@@ -31,9 +29,6 @@ def update_password(
 
 
 @router.delete("/me", status_code=status.HTTP_204_NO_CONTENT)
-def delete_account(data: DeleteUser, session: BaseSession) -> Response:
-    if not get_configurations().depuration:
-        raise ForbiddenError("Esta rota está disponível apenas em desenvolvimento")
-
-    UserService(session).delete(data.id)
+def delete_account(data: DeleteUser, user: ActualUser, session: BaseSession) -> Response:
+    UserService(session).delete(data.password, user)
     return Response(status_code=status.HTTP_204_NO_CONTENT)

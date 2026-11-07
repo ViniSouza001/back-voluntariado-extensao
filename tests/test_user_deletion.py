@@ -7,6 +7,8 @@ from sqlalchemy.orm import Session
 from sqlalchemy.pool import StaticPool
 
 import app.models  # noqa: F401 - registra os models no metadata
+from app.api.dependencies import get_current_user
+from app.core.security import generate_hash_password
 from app.db.base import Base
 from app.db.session import get_session
 from app.main import app
@@ -28,7 +30,7 @@ class UserDeletionTests(unittest.TestCase):
             name="Usuário removido",
             cpf="12345678901",
             email="removed@example.com",
-            password="test",
+            password=generate_hash_password("test-password"),
             birth_date=date(2000, 1, 1),
             city="São Paulo",
             uf="SP",
@@ -59,6 +61,7 @@ class UserDeletionTests(unittest.TestCase):
         self.session.commit()
 
         app.dependency_overrides[get_session] = lambda: self.session
+        app.dependency_overrides[get_current_user] = lambda: self.user
         self.client = TestClient(app)
 
     def tearDown(self):
@@ -67,20 +70,36 @@ class UserDeletionTests(unittest.TestCase):
         self.session.close()
         self.engine.dispose()
 
-    def test_delete_any_user_by_id_and_related_invitations(self):
+    def test_delete_authenticated_user_and_related_invitations(self):
         deleted_user_id = self.user.id
         kept_user_id = self.other_user.id
 
         response = self.client.request(
             "DELETE",
             "/api/v1/user/me",
-            json={"id": deleted_user_id},
+            json={"password": "test-password", "id": kept_user_id},
         )
 
         self.assertEqual(response.status_code, 204)
         self.assertIsNone(self.session.get(User, deleted_user_id))
         self.assertIsNotNone(self.session.get(User, kept_user_id))
         self.assertEqual(self.session.scalars(select(Invitation)).all(), [])
+
+    def test_wrong_password_keeps_account_and_invitations(self):
+        response = self.client.request(
+            "DELETE", "/api/v1/user/me", json={"password": "wrong-password"}
+        )
+        self.assertEqual(response.status_code, 401)
+        self.assertIsNotNone(self.session.get(User, self.user.id))
+        self.assertEqual(len(self.session.scalars(select(Invitation)).all()), 2)
+
+    def test_deletion_requires_authentication(self):
+        del app.dependency_overrides[get_current_user]
+        response = self.client.request(
+            "DELETE", "/api/v1/user/me", json={"password": "test-password"}
+        )
+        self.assertEqual(response.status_code, 401)
+        self.assertIsNotNone(self.session.get(User, self.user.id))
 
 
 if __name__ == "__main__":

@@ -6,6 +6,7 @@ from app.core.exceptions import AuthenticationError, ConflictError, ValidationEr
 from app.core.security import generate_hash_password, verify_password
 from app.models.user import User
 from app.repositories.users import RepositoryUser
+from app.repositories.member_entities import RepositoryMemberEntity
 from app.repositories.invitations import RepositoryInvitation
 from app.schemas.user import UpdatePassword, UpdateUser
 
@@ -44,10 +45,15 @@ class UserService:
             raise ValidationError(str(error)) from error
         self.session.commit()
 
-    def delete(self, id_user: int) -> None:
-        user = RepositoryUser.search_for_id(self.session, id_user)
+    def delete(self, password: str, user: User) -> None:
         if user is None:
             raise ValidationError("Usuário não encontrado")
+
+        if RepositoryMemberEntity.search_by_user(self.session, user.id):
+            raise ValidationError("Você não pode excluir sua conta participando de uma entidade")
+
+        if not verify_password(password, user.password):
+            raise AuthenticationError("Não foi possível excluir a conta. Verifique suas credenciais e tente novamente")
 
         try:
             # Convites possuem duas chaves estrangeiras para users. Eles precisam

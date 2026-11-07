@@ -2,7 +2,11 @@ from fastapi import APIRouter, Response, status
 
 from app.api.dependencies import ActualUser, BaseSession
 from app.repositories.entities import RepositoryEntity
-from app.schemas.entity import EntityCreation, EntityResponse
+from app.schemas.entity import (
+    EntityCreation,
+    EntityDashboardResponse,
+    EntityResponse,
+)
 from app.schemas.entity_join_request import (
     DecideEntityJoinRequest,
     EntityJoinRequestResponse,
@@ -47,6 +51,18 @@ def list_nearby_entities(
 @router.get("/me", response_model=EntityMembershipResponse | None)
 def get_my_entity(actual_user: ActualUser, session: BaseSession):
     return EntityService(session).get_for_user(actual_user)
+
+
+@router.get(
+    "/{id_entity}/dashboard",
+    response_model=EntityDashboardResponse,
+)
+def get_entity_dashboard(
+    id_entity: int,
+    actual_user: ActualUser,
+    session: BaseSession,
+):
+    return EntityService(session).get_dashboard(id_entity, actual_user)
 
 
 @router.get("/join-requests/me", response_model=list[EntityJoinRequestResponse])

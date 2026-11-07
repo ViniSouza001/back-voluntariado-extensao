@@ -43,3 +43,36 @@ class EntitySummary(BaseModel):
     
     id: int
     name: str
+
+
+class DashboardVacanciesStats(BaseModel):
+    total: int
+    active: int
+    ended: int
+    in_person: int
+    remote: int
+
+
+class DashboardMembersStats(BaseModel):
+    total: int
+    admins: int
+    editors: int
+    members: int
+
+
+class DashboardParticipantsStats(BaseModel):
+    total_enrollments: int
+    unique_volunteers: int
+
+
+class DashboardPendingRequestsStats(BaseModel):
+    total: int
+    entity: int
+    vacancies: int
+
+
+class EntityDashboardResponse(BaseModel):
+    vacancies: DashboardVacanciesStats
+    members: DashboardMembersStats
+    participants: DashboardParticipantsStats
+    pending_requests: DashboardPendingRequestsStats

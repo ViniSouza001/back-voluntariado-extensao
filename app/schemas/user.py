@@ -50,7 +50,7 @@ class UpdateUser(BaseModel):
 class DeleteUser(BaseModel):
     model_config = ConfigDict(str_strip_whitespace=True)
 
-    id: int
+    password: str = Field(min_length=6, max_length=72)
 
 
 class UpdatePassword(BaseModel):
